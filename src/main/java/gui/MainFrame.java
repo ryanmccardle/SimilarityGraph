@@ -128,13 +128,14 @@ public class MainFrame extends javax.swing.JFrame {
 
         prosentLabel.setText("Percentage");
 
+        prosentTextField.setText("1.5");
         prosentTextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 prosentTextFieldActionPerformed(evt);
             }
         });
 
-        resultaterPanel.setBorder(BorderFactory.createTitledBorder("Resultater"));
+        resultaterPanel.setBorder(BorderFactory.createTitledBorder("Results"));
 
         antallNoderLabel.setText("Number of nodes");
 
@@ -227,9 +228,9 @@ public class MainFrame extends javax.swing.JFrame {
 
         antNaboerEnVeiLabel.setText("Num neighbors one way");
 
-        nettverkStatistikkButton.setText("Statistics");
+        antNaboerEnVeiTextField.setText("2");
+
         nettverkStatistikkButton.setText("Create statistics file");
->>>>>>> Stashed changes
         nettverkStatistikkButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 nettverkStatistikkButtonActionPerformed(evt);
@@ -239,6 +240,8 @@ public class MainFrame extends javax.swing.JFrame {
         statusNettverkLabel.setText("Status:");
 
         cliqueSizeLabel.setText("Clique size");
+
+        cliqueSizeTextField.setText("3");
 
         nettverkNullstillButton.setText("Reset");
         nettverkNullstillButton.addActionListener(new java.awt.event.ActionListener() {
@@ -398,7 +401,7 @@ public class MainFrame extends javax.swing.JFrame {
             numConnectedComponentsTextField.setText(algoritme.getNumConnectedComponents().toString());
             numBridgesTextField.setText(algoritme.getNumBridges().toString());
             numMissingDirectRelationshipsTextField.setText(algoritme.getNumMissingDirectNeighborRelationships().toString());
-            statusNettverkLabel.setText("Status: algorithem executed.");
+            statusNettverkLabel.setText("Status: calculation complete.");
             nettverkStatistikkButton.setEnabled(true);
             lagResultatfilButton.setEnabled(true);
         }

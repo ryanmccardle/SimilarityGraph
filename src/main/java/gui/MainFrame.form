@@ -79,8 +79,8 @@
         <Container class="javax.swing.JPanel" name="noderPanel">
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
-              <JTabbedPaneConstraints tabName="Nettverk">
-                <Property name="tabTitle" type="java.lang.String" value="Nettverk"/>
+              <JTabbedPaneConstraints tabName="Network">
+                <Property name="tabTitle" type="java.lang.String" value="Network"/>
               </JTabbedPaneConstraints>
             </Constraint>
           </Constraints>
@@ -224,13 +224,16 @@
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="prosentTextField">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="1.5"/>
+              </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="prosentTextFieldActionPerformed"/>
               </Events>
             </Component>
             <Container class="javax.swing.JPanel" name="resultaterPanel">
               <AuxValues>
-                <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="resultaterPanel.setBorder(BorderFactory.createTitledBorder(&quot;Resultater&quot;));"/>
+                <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="resultaterPanel.setBorder(BorderFactory.createTitledBorder(&quot;Results&quot;));"/>
               </AuxValues>
 
               <Layout>
@@ -377,6 +380,9 @@
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="antNaboerEnVeiTextField">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="2"/>
+              </Properties>
             </Component>
             <Component class="javax.swing.JButton" name="nettverkStatistikkButton">
               <Properties>
@@ -397,6 +403,9 @@
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="cliqueSizeTextField">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="3"/>
+              </Properties>
             </Component>
             <Component class="javax.swing.JButton" name="nettverkNullstillButton">
               <Properties>
