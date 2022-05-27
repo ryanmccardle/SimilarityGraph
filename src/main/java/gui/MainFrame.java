@@ -328,7 +328,7 @@ public class MainFrame extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        visibilityGraphtabbedPane.addTab("Nettverk", noderPanel);
+        visibilityGraphtabbedPane.addTab("Network", noderPanel);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
