@@ -228,6 +228,8 @@ public class MainFrame extends javax.swing.JFrame {
         antNaboerEnVeiLabel.setText("Num neighbors one way");
 
         nettverkStatistikkButton.setText("Statistics");
+        nettverkStatistikkButton.setText("Create statistics file");
+>>>>>>> Stashed changes
         nettverkStatistikkButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 nettverkStatistikkButtonActionPerformed(evt);
@@ -361,9 +363,9 @@ public class MainFrame extends javax.swing.JFrame {
             final boolean ok = MyWriter.writeShortSummary(fileName, antNaboerTilSummary, localClusteringCoefficients);
 
             if (ok) {
-                statusNettverkLabel.setText("<html><font color='green'>Fil " + fileName + " opprettet.</font></html>");
+                statusNettverkLabel.setText("<html><font color='green'>File " + fileName + " created.</font></html>");
             } else {
-                statusNettverkLabel.setText("<html><font color='red'>Fil IKKE opprettet.</font></html>");
+                statusNettverkLabel.setText("<html><font color='red'>File NOT created.</font></html>");
             }
         }
     }//GEN-LAST:event_nettverkStatistikkButtonActionPerformed
@@ -396,7 +398,7 @@ public class MainFrame extends javax.swing.JFrame {
             numConnectedComponentsTextField.setText(algoritme.getNumConnectedComponents().toString());
             numBridgesTextField.setText(algoritme.getNumBridges().toString());
             numMissingDirectRelationshipsTextField.setText(algoritme.getNumMissingDirectNeighborRelationships().toString());
-            statusNettverkLabel.setText("Status: algoritmen er utført.");
+            statusNettverkLabel.setText("Status: algorithem executed.");
             nettverkStatistikkButton.setEnabled(true);
             lagResultatfilButton.setEnabled(true);
         }
@@ -412,7 +414,7 @@ public class MainFrame extends javax.swing.JFrame {
             try {
                 tidsserie = MyReader.getTidsserie(valgtFil);
             } catch (IOException e) {
-                JOptionPane.showMessageDialog(this, "Kunne ikke lage tidsserie.");
+                JOptionPane.showMessageDialog(this, "Could not create time series.");
             }
         }
     }//GEN-LAST:event_velgInputfilButtonActionPerformed
@@ -427,17 +429,17 @@ public class MainFrame extends javax.swing.JFrame {
                 tidsserier.add(prs, alg.getNumSimilarNeighbors());
             }
 
-            statusNettverkLabel.setText("Oppretter fil ...");
+            statusNettverkLabel.setText("Creating file ...");
 
             int antNaboerEnVei = Integer.parseInt(antNaboerEnVeiTextField.getText());
 
-            String filnavn = getUtdataFilnavn(valgtFil, "resultater", antNaboerEnVei);
+            String filnavn = getUtdataFilnavn(valgtFil, "results", antNaboerEnVei);
             boolean ok = MyWriter.write(filnavn, tidsserier);
 
             if (ok) {
-                statusNettverkLabel.setText("<html><font color='green'>Fil " + filnavn + " opprettet.</font></html>");
+                statusNettverkLabel.setText("<html><font color='green'>File " + filnavn + " created.</font></html>");
             } else {
-                statusNettverkLabel.setText("<html><font color='red'>Fil IKKE opprettet.</font></html>");
+                statusNettverkLabel.setText("<html><font color='red'>File NOT created.</font></html>");
             }
         }
     }//GEN-LAST:event_lagResultatfilButtonActionPerformed
@@ -501,11 +503,11 @@ public class MainFrame extends javax.swing.JFrame {
         String navn = file.getName();
         navn = navn.substring(0, navn.lastIndexOf("."));
         String resultatPath = absolutePath.substring(0, absolutePath.lastIndexOf(File.separator));
-        String resultatFilNavn = resultatPath + File.separator + navn + "_nettverk_statistikk_antNaboer_" + antNaboerTilHoyre.toString();
+        String resultatFilNavn = resultatPath + File.separator + navn + "_network_statistics_numNeighbors_" + antNaboerTilHoyre.toString();
         if (threshold.getThresholdType() == ThresholdType.ABSOLUTE_VALUE) {
             resultatFilNavn += "_absolute_" + threshold.getRawInput() +  ".txt";
         } else {
-            resultatFilNavn += "_prosent_" + threshold.getRawInput() +  ".txt";
+            resultatFilNavn += "_percent_" + threshold.getRawInput() +  ".txt";
         }
         return resultatFilNavn;
     }
@@ -516,7 +518,7 @@ public class MainFrame extends javax.swing.JFrame {
         navn = navn.substring(0, navn.lastIndexOf("."));
         String resultatPath = absolutePath.substring(0, absolutePath.lastIndexOf(File.separator));
         if (antNaboerEnVei != null) { // nettverk
-            String resultatFilNavn = resultatPath + File.separator + navn + "_antNaboerEnVei" + antNaboerEnVei + "_" +  extension + ".txt";
+            String resultatFilNavn = resultatPath + File.separator + navn + "_numNeighborsOneWay" + antNaboerEnVei + "_" +  extension + ".txt";
             return resultatFilNavn;
         } else { // symboldynamikk
             String resultatFilNavn = resultatPath + File.separator + navn + "_" +  extension + ".txt";

@@ -18,7 +18,7 @@ public class MyWriter {
     public static boolean writeMultigraphSummary(String fileName, Map<Integer,Summary> antNaboerTilSummary, List<Integer> numSimilarNeighborsPerNode) {
         final Path path = Paths.get(fileName);
         try (BufferedWriter writer = Files.newBufferedWriter(path)) {
-            writer.write("Antall naboer\tAntall noder\tAkkumulert sum\n");
+            writer.write("Number of neighbors\tNumber of nodes\tAccumulated sum\n");
             
             for (Entry<Integer,Summary> entry : antNaboerTilSummary.entrySet()) {
                 final Summary summary = entry.getValue();
@@ -41,7 +41,7 @@ public class MyWriter {
     public static boolean writeShortSummary(String fileName, Map<Integer,Summary> antNaboerTilSummary, List<BigDecimal> localClusteringCoefficients) {
         Path path = Paths.get(fileName);
         try (BufferedWriter writer = Files.newBufferedWriter(path)) {
-            writer.write("Antall naboer\tAntall noder\tAkkumulert sum\n");
+            writer.write("Number of neighbors\tNumber of nodes\tAccumulated sum\n");
             
             for (Entry<Integer,Summary> entry : antNaboerTilSummary.entrySet()) {
                 Summary summary = entry.getValue();
