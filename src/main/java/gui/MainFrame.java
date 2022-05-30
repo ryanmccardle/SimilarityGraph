@@ -400,9 +400,18 @@ public class MainFrame extends javax.swing.JFrame {
                 final String fileName = getNettverkStatistikkUtdataFilnavn(file, antNaboerEnVei, threshold); // threshold
 
                 boolean settings_ok = MyWriter.writeSettings(fileName, file.getAbsolutePath(), prosent, antNaboerEnvei, cliqueSize, false);
+                
+                Integer numCliques = algorithim.getNumberOfCliques(cliqueSize);
+                Integer antallNoder = algorithim.getNumNodes();
+                Double gjennomsnitt = algorithim.getAverage();
+                Integer numConnectedComponents = algorithim.getNumConnectedComponents();
+                Integer numBridges = algorithim.getNumBridges();
+                Integer numMissingDirectRelationships = algorithim.getNumMissingDirectNeighborRelationships();   
+                boolean results_ok = MyWriter.writeResults(fileName, numCliques, antallNoder, gjennomsnitt, numConnectedComponents, numBridges, numMissingDirectRelationships, true);
+                
                 boolean summary_ok = MyWriter.writeShortSummary(fileName, antNaboerTilSummary, localClusteringCoefficients, true);
 
-                if (settings_ok & summary_ok) {
+                if (settings_ok & results_ok & summary_ok) {
                     statusNettverkLabel.setText("<html><font color='green'>File " + fileName + " created.</font></html>");
                 } else {
                     statusNettverkLabel.setText("<html><font color='red'>File NOT created.</font></html>");
@@ -492,13 +501,10 @@ public class MainFrame extends javax.swing.JFrame {
                 antNaboerEnvei = Integer.parseInt(antNaboerEnVeiTextField.getText());
                 
                 TimeseriesToGraph algorithim = new TimeseriesToGraph(timeSeries, threshold, antNaboerEnvei, SimilarityDefinitions.SYMMETRIC);
-                algorithims.add(algorithim);
-                        
-                final AdjacencyList adjacencyList = algorithim.getAdjacencyList(cliqueSize);
-                final Set<CompleteSubgraph> completeSubgraphs = new CompleteGraphFinder().find(adjacencyList, cliqueSize);
+                algorithims.add(algorithim); 
                 
                 // Update text fields
-                numCliquesTextField.setText(numCliquesTextField.getText() + String.valueOf(completeSubgraphs.size()) + ";");
+                numCliquesTextField.setText(numCliquesTextField.getText() + String.valueOf(algorithim.getNumberOfCliques(cliqueSize)) + ";");
                 antallNoderTextField.setText(antallNoderTextField.getText() + algorithim.getNumNodes().toString() + ";");
                 gjennomsnitttextField.setText(gjennomsnitttextField.getText() + algorithim.getAverage().toString() + ";");
                 numConnectedComponentsTextField.setText(numConnectedComponentsTextField.getText() + algorithim.getNumConnectedComponents().toString() + ";");

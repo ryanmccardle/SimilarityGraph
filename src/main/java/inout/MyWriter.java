@@ -45,12 +45,43 @@ public class MyWriter {
         Path path = Paths.get(outputFileName);
         
         try (BufferedWriter writer = Files.newBufferedWriter(path, append?APPEND_OPTIONS:OVERWRITE_OPTIONS)) {   
-            writer.append("Input filename\tPercentage\tNum neighbors one way\tClique size\tAbsolute value\n");
+            writer.append("Input filename\tPercentage\tNum neighbors one way\tClique size\tAbsolute value");
+            writer.newLine();
             
             writer.append(inputFileName + "\t");
             writer.append(prosent + "\t");
             writer.append(antNaboerEnvei + "\t");
             writer.append(cliqueSize + "");
+            writer.newLine();
+            writer.newLine();
+        } catch (IOException e) {
+            return false;
+        }
+        
+        return true;
+    }
+    
+                    // Update text fields
+                //numCliquesTextField.setText(numCliquesTextField.getText() + String.valueOf(algorithim.getNumberOfCliques(cliqueSize)) + ";");
+                //antallNoderTextField.setText(antallNoderTextField.getText() + algorithim.getNumNodes().toString() + ";");
+                //gjennomsnitttextField.setText(gjennomsnitttextField.getText() + algorithim.getAverage().toString() + ";");
+                //numConnectedComponentsTextField.setText(numConnectedComponentsTextField.getText() + algorithim.getNumConnectedComponents().toString() + ";");
+                //numBridgesTextField.setText(numBridgesTextField.getText() + algorithim.getNumBridges().toString() + ";");
+                //umMissingDirectRelationshipsTextField.setText(numMissingDirectRelationshipsTextField.getText() + algorithim.getNumMissingDirectNeighborRelationships().toString() + ";");
+                
+    public static boolean writeResults(String outputFileName, Integer numCliques, Integer antallNoder, Double gjennomsnitt, Integer numConnectedComponents, Integer numBridges, Integer numMissingDirectRelationships,  boolean append) {
+        Path path = Paths.get(outputFileName);
+        
+        try (BufferedWriter writer = Files.newBufferedWriter(path, append?APPEND_OPTIONS:OVERWRITE_OPTIONS)) {            
+            writer.append("Num nodes\tAvg num equal neighbors\tNum connected components\tNum bridges\tNum missing edges between direct neighbours\tNum cliques");
+            writer.newLine();
+            
+            writer.append(antallNoder + "\t");
+            writer.append(gjennomsnitt + "\t");
+            writer.append(numConnectedComponents + "\t");
+            writer.append(numBridges + "\t");
+            writer.append(numMissingDirectRelationships + "\t");
+            writer.append(numCliques + "");
             writer.newLine();
             writer.newLine();
         } catch (IOException e) {

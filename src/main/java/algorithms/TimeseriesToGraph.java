@@ -1,6 +1,7 @@
 package algorithms;
 
 import datastructures.graphs.AdjacencyList;
+import datastructures.graphs.CompleteSubgraph;
 import datastructures.graphs.v2.LayeredAdjacencyList;
 import datastructures.vo.Threshold;
 import datastructures.vo.ThresholdAbsoluteValue;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import static utils.GraphSummaryUtils.summaryMapper;
 import utils.SimilarityDefinitions;
 import vo.Summary;
@@ -184,6 +186,12 @@ public class TimeseriesToGraph {
 
     public Integer getNumMissingDirectNeighborRelationships() {
         return numMissingDirectNeighborRelationships;
+    }
+    
+    public Integer getNumberOfCliques(Integer cliqueSize) {
+        final AdjacencyList adjacencyList = getAdjacencyList(cliqueSize);
+        final Set<CompleteSubgraph> completeSubgraphs = new CompleteGraphFinder().find(adjacencyList, cliqueSize);
+        return completeSubgraphs.size();
     }
     
     private BigDecimal getLocalClusteringCoefficientOf(int i) {
