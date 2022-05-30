@@ -47,6 +47,7 @@ public class MainFrame extends javax.swing.JFrame {
         initComponents();
         lagResultatfilButton.setEnabled(false);
         nettverkStatistikkButton.setEnabled(false);
+        tabularFileButton.setEnabled(false);
         
         // Init lists
         timeSeriesList = new ArrayList<List<Integer>>();
@@ -95,7 +96,7 @@ public class MainFrame extends javax.swing.JFrame {
         outputPanel = new javax.swing.JPanel();
         lagResultatfilButton = new javax.swing.JButton();
         nettverkStatistikkButton = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        tabularFileButton = new javax.swing.JButton();
         antNaboerEnVeiLabel = new javax.swing.JLabel();
         antNaboerEnVeiTextField = new javax.swing.JTextField();
         statusNettverkLabel = new javax.swing.JLabel();
@@ -247,7 +248,7 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
 
-        jButton2.setText("Tabular file");
+        tabularFileButton.setText("Tabular file");
 
         javax.swing.GroupLayout outputPanelLayout = new javax.swing.GroupLayout(outputPanel);
         outputPanel.setLayout(outputPanelLayout);
@@ -258,7 +259,7 @@ public class MainFrame extends javax.swing.JFrame {
                 .addGroup(outputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(lagResultatfilButton)
                     .addComponent(nettverkStatistikkButton)
-                    .addComponent(jButton2))
+                    .addComponent(tabularFileButton))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         outputPanelLayout.setVerticalGroup(
@@ -269,7 +270,7 @@ public class MainFrame extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(nettverkStatistikkButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton2)
+                .addComponent(tabularFileButton)
                 .addContainerGap(14, Short.MAX_VALUE))
         );
 
@@ -440,10 +441,10 @@ public class MainFrame extends javax.swing.JFrame {
     private void nettverkNullstillButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nettverkNullstillButtonActionPerformed
         valgtFilTextField.setText("");
         selectedFiles = null;
-        prosentTextField.setText("");
+        prosentTextField.setText("1.5");
         absoluttverdiTextField.setText("");
-        antNaboerEnVeiTextField.setText("");
-        cliqueSizeTextField.setText("");
+        antNaboerEnVeiTextField.setText("2");
+        cliqueSizeTextField.setText("3");
         antallNoderTextField.setText("");
         gjennomsnitttextField.setText("");
         numConnectedComponentsTextField.setText("");
@@ -451,6 +452,9 @@ public class MainFrame extends javax.swing.JFrame {
         numMissingDirectRelationshipsTextField.setText("");
         numCliquesTextField.setText("");
         threshold = null;
+        lagResultatfilButton.setEnabled(false);
+        nettverkStatistikkButton.setEnabled(false);
+        tabularFileButton.setEnabled(false);
     }//GEN-LAST:event_nettverkNullstillButtonActionPerformed
 
     private void gjennomsnitttextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_gjennomsnitttextFieldActionPerformed
@@ -485,18 +489,21 @@ public class MainFrame extends javax.swing.JFrame {
                         
                 final AdjacencyList adjacencyList = algorithim.getAdjacencyList(cliqueSize);
                 final Set<CompleteSubgraph> completeSubgraphs = new CompleteGraphFinder().find(adjacencyList, cliqueSize);
-                numCliquesTextField.setText(String.valueOf(completeSubgraphs.size()));
-                antallNoderTextField.setText(algorithim.getNumNodes().toString());
-                gjennomsnitttextField.setText(algorithim.getAverage().toString());
-                numConnectedComponentsTextField.setText(algorithim.getNumConnectedComponents().toString());
-                numBridgesTextField.setText(algorithim.getNumBridges().toString());
-                numMissingDirectRelationshipsTextField.setText(algorithim.getNumMissingDirectNeighborRelationships().toString());
                 
-                // Calculation complete, enable buttons
-                statusNettverkLabel.setText("Status: calculation complete.");
-                nettverkStatistikkButton.setEnabled(true);
-                lagResultatfilButton.setEnabled(true);
+                // Update text fields
+                numCliquesTextField.setText(numCliquesTextField.getText() + String.valueOf(completeSubgraphs.size()) + ";");
+                antallNoderTextField.setText(antallNoderTextField.getText() + algorithim.getNumNodes().toString() + ";");
+                gjennomsnitttextField.setText(gjennomsnitttextField.getText() + algorithim.getAverage().toString() + ";");
+                numConnectedComponentsTextField.setText(numConnectedComponentsTextField.getText() + algorithim.getNumConnectedComponents().toString() + ";");
+                numBridgesTextField.setText(numBridgesTextField.getText() + algorithim.getNumBridges().toString() + ";");
+                numMissingDirectRelationshipsTextField.setText(numMissingDirectRelationshipsTextField.getText() + algorithim.getNumMissingDirectNeighborRelationships().toString() + ";");
+               
             }
+            // Calculation complete, enable buttons
+            statusNettverkLabel.setText("Status: calculation complete.");
+            nettverkStatistikkButton.setEnabled(true);
+            lagResultatfilButton.setEnabled(true);
+            tabularFileButton.setEnabled(true);
         }
     }//GEN-LAST:event_beregnButtonActionPerformed
 
@@ -510,6 +517,8 @@ public class MainFrame extends javax.swing.JFrame {
         // Set text in selected file(s) box
         if (selectedFiles.length == 1) {
             valgtFilTextField.setText(selectedFiles[0].getAbsolutePath());
+        } else if (selectedFiles.length == 0) {
+            valgtFilTextField.setText("");
         } else {
             valgtFilTextField.setText(String.format("Multiple files (%d)", selectedFiles.length));
         }
@@ -652,7 +661,6 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JLabel gjennomsnittLabel;
     private javax.swing.JTextField gjennomsnitttextField;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JFileChooser jFileChooser1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -675,6 +683,7 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JPanel resultaterPanel;
     private javax.swing.JLabel statusLabel;
     private javax.swing.JLabel statusNettverkLabel;
+    private javax.swing.JButton tabularFileButton;
     private javax.swing.JTextField valgtFilTextField;
     private javax.swing.JButton velgInputfilButton;
     private javax.swing.JTabbedPane visibilityGraphtabbedPane;

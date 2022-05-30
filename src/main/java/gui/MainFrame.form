@@ -373,7 +373,7 @@
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Component id="lagResultatfilButton" alignment="0" min="-2" max="-2" attributes="0"/>
                               <Component id="nettverkStatistikkButton" alignment="0" min="-2" max="-2" attributes="0"/>
-                              <Component id="jButton2" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="tabularFileButton" alignment="0" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace max="32767" attributes="0"/>
                       </Group>
@@ -387,7 +387,7 @@
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="nettverkStatistikkButton" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jButton2" min="-2" max="-2" attributes="0"/>
+                          <Component id="tabularFileButton" min="-2" max="-2" attributes="0"/>
                           <EmptySpace pref="14" max="32767" attributes="0"/>
                       </Group>
                   </Group>
@@ -411,7 +411,7 @@
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="nettverkStatistikkButtonActionPerformed"/>
                   </Events>
                 </Component>
-                <Component class="javax.swing.JButton" name="jButton2">
+                <Component class="javax.swing.JButton" name="tabularFileButton">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Tabular file"/>
                   </Properties>
