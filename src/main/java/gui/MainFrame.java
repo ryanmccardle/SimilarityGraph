@@ -249,6 +249,11 @@ public class MainFrame extends javax.swing.JFrame {
         });
 
         tabularFileButton.setText("Tabular file");
+        tabularFileButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tabularFileButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout outputPanelLayout = new javax.swing.GroupLayout(outputPanel);
         outputPanel.setLayout(outputPanelLayout);
@@ -353,7 +358,6 @@ public class MainFrame extends javax.swing.JFrame {
                     .addComponent(prosentTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(absoluttverdiLabel)
                     .addComponent(absoluttverdiTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(noderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(noderPanelLayout.createSequentialGroup()
                         .addGroup(noderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -399,7 +403,7 @@ public class MainFrame extends javax.swing.JFrame {
                 final int antNaboerEnVei = Integer.parseInt(antNaboerEnVeiTextField.getText());
                 final String fileName = getNettverkStatistikkUtdataFilnavn(file, antNaboerEnVei, threshold); // threshold
 
-                boolean settings_ok = MyWriter.writeSettings(fileName, file.getAbsolutePath(), prosent, antNaboerEnvei, cliqueSize, false);
+                boolean settings_ok = MyWriter.writeSettings(fileName, file.getAbsolutePath(), prosent, antNaboerEnvei, cliqueSize, absoluteValue, false);
                 
                 Integer numCliques = algorithim.getNumberOfCliques(cliqueSize);
                 Integer antallNoder = algorithim.getNumNodes();
@@ -557,6 +561,40 @@ public class MainFrame extends javax.swing.JFrame {
         System.out.println(selectedFiles.length);
         System.out.println(timeSeriesList.size());
     }//GEN-LAST:event_velgInputfilButtonActionPerformed
+
+    private void tabularFileButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tabularFileButtonActionPerformed
+        File firstFile = selectedFiles[0];
+        final String fileName = firstFile.getAbsolutePath() + "_tabular_output.txt";
+        boolean header_ok = MyWriter.writeTabularHeader(fileName);
+        
+        if (inputIsOK()) {
+            for (int i = 0; i < selectedFiles.length; i++)  {
+                File file = selectedFiles[i];
+                TimeseriesToGraph algorithim = algorithims.get(i);
+                Threshold threshold = thresholds.get(i);
+                
+                final Map<Integer,Summary> antNaboerTilSummary = algorithim.getNumNeighborsToSummary();
+                final List<BigDecimal> localClusteringCoefficients = algorithim.getLocalClusteringCoefficients();
+
+                final int antNaboerEnVei = Integer.parseInt(antNaboerEnVeiTextField.getText());
+
+                Integer numCliques = algorithim.getNumberOfCliques(cliqueSize);
+                Integer antallNoder = algorithim.getNumNodes();
+                Double gjennomsnitt = algorithim.getAverage();
+                Integer numConnectedComponents = algorithim.getNumConnectedComponents();
+                Integer numBridges = algorithim.getNumBridges();
+                Integer numMissingDirectRelationships = algorithim.getNumMissingDirectNeighborRelationships();   
+                
+                boolean tabular_ok = MyWriter.writeTabularLine(fileName, file.getAbsolutePath(), prosent, antNaboerEnVei, cliqueSize, absoluteValue, numCliques, antallNoder, gjennomsnitt, numConnectedComponents, numBridges, numMissingDirectRelationships, antNaboerTilSummary, localClusteringCoefficients);
+
+                if (header_ok & tabular_ok) {
+                    statusNettverkLabel.setText("<html><font color='green'>File " + fileName + " created.</font></html>");
+                } else {
+                    statusNettverkLabel.setText("<html><font color='red'>File NOT created.</font></html>");
+                }
+            }
+        }
+    }//GEN-LAST:event_tabularFileButtonActionPerformed
 
     /**
      * @param args the command line arguments

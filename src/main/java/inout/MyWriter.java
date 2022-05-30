@@ -41,7 +41,7 @@ public class MyWriter {
         return true;
     }
     
-    public static boolean writeSettings(String outputFileName, String inputFileName, Double prosent, Integer antNaboerEnvei, Integer cliqueSize, boolean append) {
+    public static boolean writeSettings(String outputFileName, String inputFileName, Double prosent, Integer antNaboerEnvei, Integer cliqueSize, Integer absoluteValue, boolean append) {
         Path path = Paths.get(outputFileName);
         
         try (BufferedWriter writer = Files.newBufferedWriter(path, append?APPEND_OPTIONS:OVERWRITE_OPTIONS)) {   
@@ -51,7 +51,8 @@ public class MyWriter {
             writer.append(inputFileName + "\t");
             writer.append(prosent + "\t");
             writer.append(antNaboerEnvei + "\t");
-            writer.append(cliqueSize + "");
+            writer.append(cliqueSize + "\t");
+            writer.append(absoluteValue + "");
             writer.newLine();
             writer.newLine();
         } catch (IOException e) {
@@ -61,13 +62,67 @@ public class MyWriter {
         return true;
     }
     
-                    // Update text fields
-                //numCliquesTextField.setText(numCliquesTextField.getText() + String.valueOf(algorithim.getNumberOfCliques(cliqueSize)) + ";");
-                //antallNoderTextField.setText(antallNoderTextField.getText() + algorithim.getNumNodes().toString() + ";");
-                //gjennomsnitttextField.setText(gjennomsnitttextField.getText() + algorithim.getAverage().toString() + ";");
-                //numConnectedComponentsTextField.setText(numConnectedComponentsTextField.getText() + algorithim.getNumConnectedComponents().toString() + ";");
-                //numBridgesTextField.setText(numBridgesTextField.getText() + algorithim.getNumBridges().toString() + ";");
-                //umMissingDirectRelationshipsTextField.setText(numMissingDirectRelationshipsTextField.getText() + algorithim.getNumMissingDirectNeighborRelationships().toString() + ";");
+    public static boolean writeTabularHeader(String outputFileName) {
+        Path path = Paths.get(outputFileName);
+        
+        try (BufferedWriter writer = Files.newBufferedWriter(path, OVERWRITE_OPTIONS)) {  
+            writer.append("Input filename\t");
+            
+            writer.append("Percentage\t");
+            writer.append("Num neighbors one way\t");
+            writer.append("Clique size\t");
+            writer.append("Absolute Value\t");
+            
+            writer.append("Num nodes\t");
+            writer.append("Avg num equal neighbors\t");
+            writer.append("Num connected components\t");
+            writer.append("Num bridges\t");
+            writer.append("Num missing edges between direct neighbors\t");
+            writer.append("Num cliques\t");
+            
+            writer.append("Num nodes 4 neighbors\t");
+            writer.append("Num nodes 3 neighbors\t");
+            writer.append("Num nodes 2 neighbors\t");
+            writer.append("Num nodes 1 neighbors\t");
+            writer.append("Num nodes 0 neighbors");
+            writer.newLine();
+        } catch (IOException e) {
+            return false;
+        }
+        
+        return true;
+    }
+    
+    public static boolean writeTabularLine(String outputFileName, String inputFileName, Double prosent, Integer antNaboerEnvei, Integer cliqueSize, Integer absoluteValue, Integer numCliques, Integer antallNoder, Double gjennomsnitt, Integer numConnectedComponents, Integer numBridges, Integer numMissingDirectRelationships, Map<Integer,Summary> antNaboerTilSummary, List<BigDecimal> localClusteringCoefficients) {
+        Path path = Paths.get(outputFileName);
+        
+        try (BufferedWriter writer = Files.newBufferedWriter(path, APPEND_OPTIONS)) {   
+            writer.append(inputFileName + "\t");
+            
+            writer.append(prosent + "\t");
+            writer.append(antNaboerEnvei + "\t");
+            writer.append(cliqueSize + "\t");
+            writer.append(absoluteValue + "\t");
+            
+            writer.append(antallNoder + "\t");
+            writer.append(gjennomsnitt + "\t");
+            writer.append(numConnectedComponents + "\t");
+            writer.append(numBridges + "\t");
+            writer.append(numMissingDirectRelationships + "\t");
+            writer.append(numCliques + "\t");
+            
+            for (Entry<Integer,Summary> entry : antNaboerTilSummary.entrySet()) {
+                Summary summary = entry.getValue();
+                writer.append(summary.getAntallNoder() + "\t");
+            }
+            
+            writer.newLine();
+        } catch (IOException e) {
+            return false;
+        }
+        
+        return true;
+    }
                 
     public static boolean writeResults(String outputFileName, Integer numCliques, Integer antallNoder, Double gjennomsnitt, Integer numConnectedComponents, Integer numBridges, Integer numMissingDirectRelationships,  boolean append) {
         Path path = Paths.get(outputFileName);
