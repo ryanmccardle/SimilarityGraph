@@ -13,6 +13,7 @@ import inout.MyWriter;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -28,17 +29,15 @@ import vo.Summary;
 public class MainFrame extends javax.swing.JFrame {
     // Inputs
     private File[] selectedFiles;
-    //private File valgtFil;
     private Double prosent;
     private Integer absoluteValue;
     private Integer cliqueSize;
-    private Threshold threshold;
+    private Integer antNaboerEnvei;
     
     // Output
-    //private TimeseriesToGraph algoritme; 
-    //private List<Integer> tidsserie;
-    private List<List<Integer>> timeSeriesList;
-    private List<TimeseriesToGraph> algorithims; 
+    private final List<Threshold> thresholds;
+    private final List<List<Integer>> timeSeriesList;
+    private final List<TimeseriesToGraph> algorithims; 
 
     /**
      * Creates new form MainFrame2
@@ -50,8 +49,9 @@ public class MainFrame extends javax.swing.JFrame {
         tabularFileButton.setEnabled(false);
         
         // Init lists
-        timeSeriesList = new ArrayList<List<Integer>>();
-        algorithims = new ArrayList<TimeseriesToGraph>();
+        timeSeriesList = new ArrayList<>();
+        algorithims = new ArrayList<>();
+        thresholds = new ArrayList<>();
     }
 
     /**
@@ -391,15 +391,18 @@ public class MainFrame extends javax.swing.JFrame {
             for (int i = 0; i < selectedFiles.length; i++)  {
                 File file = selectedFiles[i];
                 TimeseriesToGraph algorithim = algorithims.get(i);
+                Threshold threshold = thresholds.get(i);
                 
                 final Map<Integer,Summary> antNaboerTilSummary = algorithim.getNumNeighborsToSummary();
                 final List<BigDecimal> localClusteringCoefficients = algorithim.getLocalClusteringCoefficients();
 
                 final int antNaboerEnVei = Integer.parseInt(antNaboerEnVeiTextField.getText());
                 final String fileName = getNettverkStatistikkUtdataFilnavn(file, antNaboerEnVei, threshold); // threshold
-                final boolean ok = MyWriter.writeShortSummary(fileName, antNaboerTilSummary, localClusteringCoefficients);
 
-                if (ok) {
+                boolean settings_ok = MyWriter.writeSettings(fileName, file.getAbsolutePath(), prosent, antNaboerEnvei, cliqueSize, false);
+                boolean summary_ok = MyWriter.writeShortSummary(fileName, antNaboerTilSummary, localClusteringCoefficients, true);
+
+                if (settings_ok & summary_ok) {
                     statusNettverkLabel.setText("<html><font color='green'>File " + fileName + " created.</font></html>");
                 } else {
                     statusNettverkLabel.setText("<html><font color='red'>File NOT created.</font></html>");
@@ -417,7 +420,7 @@ public class MainFrame extends javax.swing.JFrame {
                 List<List<Integer>> tidsserier = new ArrayList<>();
                 tidsserier.add(0, new ArrayList<>());
                 for (int prs = 1; prs <= 100; ++prs) {
-                    int antNaboerEnvei = Integer.parseInt(antNaboerEnVeiTextField.getText());
+                    antNaboerEnvei = Integer.parseInt(antNaboerEnVeiTextField.getText());
                     final TimeseriesToGraph alg = new TimeseriesToGraph(timeSeries, new ThresholdPercentage(Double.valueOf(prs)), antNaboerEnvei, SimilarityDefinitions.SYMMETRIC);
                     tidsserier.add(prs, alg.getNumSimilarNeighbors());
                 }
@@ -451,10 +454,13 @@ public class MainFrame extends javax.swing.JFrame {
         numBridgesTextField.setText("");
         numMissingDirectRelationshipsTextField.setText("");
         numCliquesTextField.setText("");
-        threshold = null;
         lagResultatfilButton.setEnabled(false);
         nettverkStatistikkButton.setEnabled(false);
         tabularFileButton.setEnabled(false);
+        
+        thresholds.clear();
+        algorithims.clear();
+        timeSeriesList.clear();
     }//GEN-LAST:event_nettverkNullstillButtonActionPerformed
 
     private void gjennomsnitttextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_gjennomsnitttextFieldActionPerformed
@@ -468,8 +474,8 @@ public class MainFrame extends javax.swing.JFrame {
     private void beregnButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_beregnButtonActionPerformed
         if (inputIsOK()) {
             for (int i = 0; i < selectedFiles.length; i++)  {
-                File file = selectedFiles[i];
                 List<Integer> timeSeries = timeSeriesList.get(i);
+                Threshold threshold;
                 
                 if (NumberUtils.isNumber(prosentTextField.getText())) {
                     prosent = Double.parseDouble(prosentTextField.getText());
@@ -480,9 +486,10 @@ public class MainFrame extends javax.swing.JFrame {
                 } else {
                     throw new IllegalStateException("Percentage is invalid and milliseconds is invalid");
                 }
+                thresholds.add(threshold);
 
                 cliqueSize = Integer.parseInt(cliqueSizeTextField.getText());
-                int antNaboerEnvei = Integer.parseInt(antNaboerEnVeiTextField.getText());
+                antNaboerEnvei = Integer.parseInt(antNaboerEnVeiTextField.getText());
                 
                 TimeseriesToGraph algorithim = new TimeseriesToGraph(timeSeries, threshold, antNaboerEnvei, SimilarityDefinitions.SYMMETRIC);
                 algorithims.add(algorithim);
@@ -512,15 +519,22 @@ public class MainFrame extends javax.swing.JFrame {
         chooser.setMultiSelectionEnabled(true);
         chooser.showOpenDialog(this);
         selectedFiles = chooser.getSelectedFiles();
+        
+        thresholds.clear();
+        algorithims.clear();
         timeSeriesList.clear();
         
         // Set text in selected file(s) box
-        if (selectedFiles.length == 1) {
-            valgtFilTextField.setText(selectedFiles[0].getAbsolutePath());
-        } else if (selectedFiles.length == 0) {
-            valgtFilTextField.setText("");
-        } else {
-            valgtFilTextField.setText(String.format("Multiple files (%d)", selectedFiles.length));
+        switch (selectedFiles.length) {
+            case 1:
+                valgtFilTextField.setText(selectedFiles[0].getAbsolutePath());
+                break;
+            case 0:
+                valgtFilTextField.setText("");
+                break;
+            default:
+                valgtFilTextField.setText(String.format("Multiple files (%d)", selectedFiles.length));
+                break;
         }
         
         // Read time series into list of time series lists
@@ -610,17 +624,17 @@ public class MainFrame extends javax.swing.JFrame {
             return false;
         }
         
-        String antNaboerEnvei = antNaboerEnVeiTextField.getText();
+        String tempAntNaboerEnvei = antNaboerEnVeiTextField.getText();
         
-        if (antNaboerEnvei == null)
+        if (tempAntNaboerEnvei == null)
             return false;
         
-        if (StringUtils.isBlank(antNaboerEnvei)) {
+        if (StringUtils.isBlank(tempAntNaboerEnvei)) {
             return false;
         }
         
         try {
-            Integer.parseInt(antNaboerEnvei);
+            Integer.parseInt(tempAntNaboerEnvei);
         } catch (NumberFormatException e) {
             return false;
         }
@@ -637,11 +651,7 @@ public class MainFrame extends javax.swing.JFrame {
             return false;
         }
 
-        if (selectedFiles == null) {
-            return false;
-        }
-
-        return true;
+        return selectedFiles != null;
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
