@@ -65,7 +65,6 @@ public class MainFrame extends javax.swing.JFrame {
         visibilityGraphtabbedPane = new javax.swing.JTabbedPane();
         noderPanel = new javax.swing.JPanel();
         valgtFilTextField = new javax.swing.JTextField();
-        lagResultatfilButton = new javax.swing.JButton();
         velgInputfilButton = new javax.swing.JButton();
         beregnButton = new javax.swing.JButton();
         prosentLabel = new javax.swing.JLabel();
@@ -84,9 +83,12 @@ public class MainFrame extends javax.swing.JFrame {
         numMissingDirectRelationshipsTextField = new javax.swing.JTextField();
         numCliquesLabel = new javax.swing.JLabel();
         numCliquesTextField = new javax.swing.JTextField();
+        outputPanel = new javax.swing.JPanel();
+        lagResultatfilButton = new javax.swing.JButton();
+        nettverkStatistikkButton = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
         antNaboerEnVeiLabel = new javax.swing.JLabel();
         antNaboerEnVeiTextField = new javax.swing.JTextField();
-        nettverkStatistikkButton = new javax.swing.JButton();
         statusNettverkLabel = new javax.swing.JLabel();
         cliqueSizeLabel = new javax.swing.JLabel();
         cliqueSizeTextField = new javax.swing.JTextField();
@@ -101,18 +103,11 @@ public class MainFrame extends javax.swing.JFrame {
         jLabel3.setText("jLabel3");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         valgtFilTextField.setEditable(false);
 
-        lagResultatfilButton.setText("Create result file");
-        lagResultatfilButton.setToolTipText("");
-        lagResultatfilButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                lagResultatfilButtonActionPerformed(evt);
-            }
-        });
-
-        velgInputfilButton.setText("Choose file");
+        velgInputfilButton.setText("Choose file(s)");
         velgInputfilButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 velgInputfilButtonActionPerformed(evt);
@@ -223,21 +218,59 @@ public class MainFrame extends javax.swing.JFrame {
                 .addGroup(resultaterPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(numCliquesLabel)
                     .addComponent(numCliquesTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(48, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        antNaboerEnVeiLabel.setText("Num neighbors one way");
+        outputPanel.setBorder(BorderFactory.createTitledBorder("Output"));
 
-        antNaboerEnVeiTextField.setText("2");
+        lagResultatfilButton.setText("Results files");
+        lagResultatfilButton.setToolTipText("");
+        lagResultatfilButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                lagResultatfilButtonActionPerformed(evt);
+            }
+        });
 
-        nettverkStatistikkButton.setText("Create statistics file");
+        nettverkStatistikkButton.setText("Statistics files");
         nettverkStatistikkButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 nettverkStatistikkButtonActionPerformed(evt);
             }
         });
 
-        statusNettverkLabel.setText("Status:");
+        jButton2.setText("Tabular file");
+
+        javax.swing.GroupLayout outputPanelLayout = new javax.swing.GroupLayout(outputPanel);
+        outputPanel.setLayout(outputPanelLayout);
+        outputPanelLayout.setHorizontalGroup(
+            outputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(outputPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(outputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lagResultatfilButton)
+                    .addComponent(nettverkStatistikkButton)
+                    .addComponent(jButton2))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        outputPanelLayout.setVerticalGroup(
+            outputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(outputPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(lagResultatfilButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(nettverkStatistikkButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton2)
+                .addContainerGap(14, Short.MAX_VALUE))
+        );
+
+        antNaboerEnVeiLabel.setText("Num neighbors one way");
+
+        antNaboerEnVeiTextField.setText("2");
+
+        statusNettverkLabel.setBackground(new java.awt.Color(255, 255, 255));
+        statusNettverkLabel.setText(" Status:");
+        statusNettverkLabel.setOpaque(true);
 
         cliqueSizeLabel.setText("Clique size");
 
@@ -259,50 +292,48 @@ public class MainFrame extends javax.swing.JFrame {
             .addGroup(noderPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(noderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(noderPanelLayout.createSequentialGroup()
-                        .addGap(6, 6, 6)
-                        .addComponent(statusNettverkLabel)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(resultaterPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(noderPanelLayout.createSequentialGroup()
                         .addGroup(noderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(resultaterPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, noderPanelLayout.createSequentialGroup()
-                                .addGroup(noderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, noderPanelLayout.createSequentialGroup()
-                                        .addGroup(noderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(antNaboerEnVeiLabel)
-                                            .addComponent(prosentLabel)
-                                            .addComponent(velgInputfilButton))
-                                        .addGap(18, 18, 18)
-                                        .addGroup(noderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(valgtFilTextField)
-                                            .addGroup(noderPanelLayout.createSequentialGroup()
-                                                .addGroup(noderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                                    .addComponent(cliqueSizeTextField)
-                                                    .addComponent(prosentTextField, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 135, Short.MAX_VALUE)
-                                                    .addComponent(antNaboerEnVeiTextField, javax.swing.GroupLayout.Alignment.LEADING))
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(absoluttverdiLabel)
-                                                .addGap(18, 18, 18)
-                                                .addComponent(absoluttverdiTextField))))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, noderPanelLayout.createSequentialGroup()
-                                        .addComponent(beregnButton)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(nettverkNullstillButton)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(nettverkStatistikkButton)))
+                            .addComponent(antNaboerEnVeiLabel)
+                            .addComponent(prosentLabel)
+                            .addComponent(velgInputfilButton))
+                        .addGap(18, 18, 18)
+                        .addGroup(noderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(valgtFilTextField)
+                            .addGroup(noderPanelLayout.createSequentialGroup()
+                                .addGroup(noderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addComponent(cliqueSizeTextField)
+                                    .addComponent(prosentTextField, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 135, Short.MAX_VALUE)
+                                    .addComponent(antNaboerEnVeiTextField, javax.swing.GroupLayout.Alignment.LEADING))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(lagResultatfilButton)
-                                .addGap(6, 6, 6)))
-                        .addContainerGap())
+                                .addGroup(noderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(noderPanelLayout.createSequentialGroup()
+                                        .addComponent(absoluttverdiLabel)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(absoluttverdiTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(0, 0, Short.MAX_VALUE))
+                                    .addGroup(noderPanelLayout.createSequentialGroup()
+                                        .addGap(0, 0, Short.MAX_VALUE)
+                                        .addComponent(outputPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))))
                     .addGroup(noderPanelLayout.createSequentialGroup()
-                        .addComponent(cliqueSizeLabel)
-                        .addGap(0, 0, Short.MAX_VALUE))))
+                        .addGroup(noderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(cliqueSizeLabel)
+                            .addGroup(noderPanelLayout.createSequentialGroup()
+                                .addComponent(beregnButton)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(nettverkNullstillButton)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+            .addGroup(noderPanelLayout.createSequentialGroup()
+                .addGap(12, 12, 12)
+                .addComponent(statusNettverkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 460, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         noderPanelLayout.setVerticalGroup(
             noderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(noderPanelLayout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(18, 18, 18)
                 .addGroup(noderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(valgtFilTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(velgInputfilButton))
@@ -313,44 +344,33 @@ public class MainFrame extends javax.swing.JFrame {
                     .addComponent(absoluttverdiLabel)
                     .addComponent(absoluttverdiTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(noderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(antNaboerEnVeiLabel)
-                    .addComponent(antNaboerEnVeiTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(noderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cliqueSizeLabel)
-                    .addComponent(cliqueSizeTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
-                .addGroup(noderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(beregnButton)
-                    .addComponent(lagResultatfilButton)
-                    .addComponent(nettverkStatistikkButton)
-                    .addComponent(nettverkNullstillButton))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(statusNettverkLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(noderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(noderPanelLayout.createSequentialGroup()
+                        .addGroup(noderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(antNaboerEnVeiLabel)
+                            .addComponent(antNaboerEnVeiTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(noderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(cliqueSizeLabel)
+                            .addComponent(cliqueSizeTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
+                        .addGroup(noderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(beregnButton)
+                            .addComponent(nettverkNullstillButton))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(statusNettverkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(12, 12, 12))
+                    .addGroup(noderPanelLayout.createSequentialGroup()
+                        .addGap(21, 21, 21)
+                        .addComponent(outputPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addComponent(resultaterPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addGap(48, 48, 48))
         );
 
         visibilityGraphtabbedPane.addTab("Network", noderPanel);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(visibilityGraphtabbedPane)
-                .addContainerGap())
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(visibilityGraphtabbedPane)
-                .addContainerGap())
-        );
-
+        getContentPane().add(visibilityGraphtabbedPane, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 0, -1, -1));
         visibilityGraphtabbedPane.getAccessibleContext().setAccessibleName("");
 
         pack();
@@ -372,55 +392,6 @@ public class MainFrame extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_nettverkStatistikkButtonActionPerformed
-
-    private void gjennomsnitttextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_gjennomsnitttextFieldActionPerformed
-
-    }//GEN-LAST:event_gjennomsnitttextFieldActionPerformed
-
-    private void beregnButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_beregnButtonActionPerformed
-        if (inputIsOK()) {
-            
-            if (NumberUtils.isNumber(prosentTextField.getText())) {
-                prosent = Double.parseDouble(prosentTextField.getText());
-                threshold = new ThresholdPercentage(prosent);
-            } else if (NumberUtils.isNumber(absoluttverdiTextField.getText())) {
-                absoluteValue = Integer.parseInt(absoluttverdiTextField.getText());
-                threshold = new ThresholdAbsoluteValue(absoluteValue);
-            } else {
-                throw new IllegalStateException("Percentage is invalid and milliseconds is invalid");
-            }
-            
-            cliqueSize = Integer.parseInt(cliqueSizeTextField.getText());
-            int antNaboerEnvei = Integer.parseInt(antNaboerEnVeiTextField.getText());
-            algoritme = new TimeseriesToGraph(tidsserie, threshold, antNaboerEnvei, SimilarityDefinitions.SYMMETRIC);
-            final AdjacencyList adjacencyList = algoritme.getAdjacencyList(cliqueSize);
-            final Set<CompleteSubgraph> completeSubgraphs = new CompleteGraphFinder().find(adjacencyList, cliqueSize);
-            numCliquesTextField.setText(String.valueOf(completeSubgraphs.size()));
-            antallNoderTextField.setText(algoritme.getNumNodes().toString());
-            gjennomsnitttextField.setText(algoritme.getAverage().toString());
-            numConnectedComponentsTextField.setText(algoritme.getNumConnectedComponents().toString());
-            numBridgesTextField.setText(algoritme.getNumBridges().toString());
-            numMissingDirectRelationshipsTextField.setText(algoritme.getNumMissingDirectNeighborRelationships().toString());
-            statusNettverkLabel.setText("Status: calculation complete.");
-            nettverkStatistikkButton.setEnabled(true);
-            lagResultatfilButton.setEnabled(true);
-        }
-    }//GEN-LAST:event_beregnButtonActionPerformed
-
-    private void velgInputfilButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_velgInputfilButtonActionPerformed
-        JFileChooser chooser = new JFileChooser();
-        chooser.showOpenDialog(this);
-        File nyValgtFil = chooser.getSelectedFile();
-        if (!nyValgtFil.equals(valgtFil)) { // brukeren har valgt en annen fil enn forrige gang
-            valgtFil = nyValgtFil;
-            valgtFilTextField.setText(valgtFil.getAbsolutePath());
-            try {
-                tidsserie = MyReader.getTidsserie(valgtFil);
-            } catch (IOException e) {
-                JOptionPane.showMessageDialog(this, "Could not create time series.");
-            }
-        }
-    }//GEN-LAST:event_velgInputfilButtonActionPerformed
 
     private void lagResultatfilButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lagResultatfilButtonActionPerformed
         if (inputIsOK()) {
@@ -463,9 +434,58 @@ public class MainFrame extends javax.swing.JFrame {
         threshold = null;
     }//GEN-LAST:event_nettverkNullstillButtonActionPerformed
 
+    private void gjennomsnitttextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_gjennomsnitttextFieldActionPerformed
+
+    }//GEN-LAST:event_gjennomsnitttextFieldActionPerformed
+
     private void prosentTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_prosentTextFieldActionPerformed
-        
+
     }//GEN-LAST:event_prosentTextFieldActionPerformed
+
+    private void beregnButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_beregnButtonActionPerformed
+        if (inputIsOK()) {
+
+            if (NumberUtils.isNumber(prosentTextField.getText())) {
+                prosent = Double.parseDouble(prosentTextField.getText());
+                threshold = new ThresholdPercentage(prosent);
+            } else if (NumberUtils.isNumber(absoluttverdiTextField.getText())) {
+                absoluteValue = Integer.parseInt(absoluttverdiTextField.getText());
+                threshold = new ThresholdAbsoluteValue(absoluteValue);
+            } else {
+                throw new IllegalStateException("Percentage is invalid and milliseconds is invalid");
+            }
+
+            cliqueSize = Integer.parseInt(cliqueSizeTextField.getText());
+            int antNaboerEnvei = Integer.parseInt(antNaboerEnVeiTextField.getText());
+            algoritme = new TimeseriesToGraph(tidsserie, threshold, antNaboerEnvei, SimilarityDefinitions.SYMMETRIC);
+            final AdjacencyList adjacencyList = algoritme.getAdjacencyList(cliqueSize);
+            final Set<CompleteSubgraph> completeSubgraphs = new CompleteGraphFinder().find(adjacencyList, cliqueSize);
+            numCliquesTextField.setText(String.valueOf(completeSubgraphs.size()));
+            antallNoderTextField.setText(algoritme.getNumNodes().toString());
+            gjennomsnitttextField.setText(algoritme.getAverage().toString());
+            numConnectedComponentsTextField.setText(algoritme.getNumConnectedComponents().toString());
+            numBridgesTextField.setText(algoritme.getNumBridges().toString());
+            numMissingDirectRelationshipsTextField.setText(algoritme.getNumMissingDirectNeighborRelationships().toString());
+            statusNettverkLabel.setText("Status: calculation complete.");
+            nettverkStatistikkButton.setEnabled(true);
+            lagResultatfilButton.setEnabled(true);
+        }
+    }//GEN-LAST:event_beregnButtonActionPerformed
+
+    private void velgInputfilButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_velgInputfilButtonActionPerformed
+        JFileChooser chooser = new JFileChooser();
+        chooser.showOpenDialog(this);
+        File nyValgtFil = chooser.getSelectedFile();
+        if (!nyValgtFil.equals(valgtFil)) { // brukeren har valgt en annen fil enn forrige gang
+            valgtFil = nyValgtFil;
+            valgtFilTextField.setText(valgtFil.getAbsolutePath());
+            try {
+                tidsserie = MyReader.getTidsserie(valgtFil);
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(this, "Could not create time series.");
+            }
+        }
+    }//GEN-LAST:event_velgInputfilButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -594,6 +614,7 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JLabel gjennomsnittLabel;
     private javax.swing.JTextField gjennomsnitttextField;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JFileChooser jFileChooser1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -610,6 +631,7 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JLabel numConnectedComponentsLabel;
     private javax.swing.JTextField numConnectedComponentsTextField;
     private javax.swing.JTextField numMissingDirectRelationshipsTextField;
+    private javax.swing.JPanel outputPanel;
     private javax.swing.JLabel prosentLabel;
     private javax.swing.JTextField prosentTextField;
     private javax.swing.JPanel resultaterPanel;
