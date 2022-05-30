@@ -26,14 +26,19 @@ import utils.SimilarityDefinitions;
 import vo.Summary;
 
 public class MainFrame extends javax.swing.JFrame {
-    
+    // Inputs
+    private File[] selectedFiles;
+    //private File valgtFil;
     private Double prosent;
     private Integer absoluteValue;
     private Integer cliqueSize;
-    private File valgtFil;
-    private TimeseriesToGraph algoritme;
-    private List<Integer> tidsserie;
     private Threshold threshold;
+    
+    // Output
+    //private TimeseriesToGraph algoritme; 
+    //private List<Integer> tidsserie;
+    private List<List<Integer>> timeSeriesList;
+    private List<TimeseriesToGraph> algorithims; 
 
     /**
      * Creates new form MainFrame2
@@ -42,6 +47,10 @@ public class MainFrame extends javax.swing.JFrame {
         initComponents();
         lagResultatfilButton.setEnabled(false);
         nettverkStatistikkButton.setEnabled(false);
+        
+        // Init lists
+        timeSeriesList = new ArrayList<List<Integer>>();
+        algorithims = new ArrayList<TimeseriesToGraph>();
     }
 
     /**
@@ -378,49 +387,59 @@ public class MainFrame extends javax.swing.JFrame {
 
     private void nettverkStatistikkButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nettverkStatistikkButtonActionPerformed
         if (inputIsOK()) {
-            final Map<Integer,Summary> antNaboerTilSummary = algoritme.getNumNeighborsToSummary();
-            final List<BigDecimal> localClusteringCoefficients = algoritme.getLocalClusteringCoefficients();
+            for (int i = 0; i < selectedFiles.length; i++)  {
+                File file = selectedFiles[i];
+                TimeseriesToGraph algorithim = algorithims.get(i);
+                
+                final Map<Integer,Summary> antNaboerTilSummary = algorithim.getNumNeighborsToSummary();
+                final List<BigDecimal> localClusteringCoefficients = algorithim.getLocalClusteringCoefficients();
 
-            final int antNaboerEnVei = Integer.parseInt(antNaboerEnVeiTextField.getText());
-            final String fileName = getNettverkStatistikkUtdataFilnavn(valgtFil, antNaboerEnVei, threshold); // threshold
-            final boolean ok = MyWriter.writeShortSummary(fileName, antNaboerTilSummary, localClusteringCoefficients);
+                final int antNaboerEnVei = Integer.parseInt(antNaboerEnVeiTextField.getText());
+                final String fileName = getNettverkStatistikkUtdataFilnavn(file, antNaboerEnVei, threshold); // threshold
+                final boolean ok = MyWriter.writeShortSummary(fileName, antNaboerTilSummary, localClusteringCoefficients);
 
-            if (ok) {
-                statusNettverkLabel.setText("<html><font color='green'>File " + fileName + " created.</font></html>");
-            } else {
-                statusNettverkLabel.setText("<html><font color='red'>File NOT created.</font></html>");
+                if (ok) {
+                    statusNettverkLabel.setText("<html><font color='green'>File " + fileName + " created.</font></html>");
+                } else {
+                    statusNettverkLabel.setText("<html><font color='red'>File NOT created.</font></html>");
+                }
             }
         }
     }//GEN-LAST:event_nettverkStatistikkButtonActionPerformed
 
     private void lagResultatfilButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lagResultatfilButtonActionPerformed
         if (inputIsOK()) {
-            List<List<Integer>> tidsserier = new ArrayList<>();
-            tidsserier.add(0, new ArrayList<>());
-            for (int prs = 1; prs <= 100; ++prs) {
-                int antNaboerEnvei = Integer.parseInt(antNaboerEnVeiTextField.getText());
-                final TimeseriesToGraph alg = new TimeseriesToGraph(tidsserie, new ThresholdPercentage(Double.valueOf(prs)), antNaboerEnvei, SimilarityDefinitions.SYMMETRIC);
-                tidsserier.add(prs, alg.getNumSimilarNeighbors());
-            }
+            for (int i = 0; i < selectedFiles.length; i++)  {
+                File file = selectedFiles[i];
+                List<Integer> timeSeries = timeSeriesList.get(i);
+                
+                List<List<Integer>> tidsserier = new ArrayList<>();
+                tidsserier.add(0, new ArrayList<>());
+                for (int prs = 1; prs <= 100; ++prs) {
+                    int antNaboerEnvei = Integer.parseInt(antNaboerEnVeiTextField.getText());
+                    final TimeseriesToGraph alg = new TimeseriesToGraph(timeSeries, new ThresholdPercentage(Double.valueOf(prs)), antNaboerEnvei, SimilarityDefinitions.SYMMETRIC);
+                    tidsserier.add(prs, alg.getNumSimilarNeighbors());
+                }
 
-            statusNettverkLabel.setText("Creating file ...");
+                statusNettverkLabel.setText("Creating file ...");
 
-            int antNaboerEnVei = Integer.parseInt(antNaboerEnVeiTextField.getText());
+                int antNaboerEnVei = Integer.parseInt(antNaboerEnVeiTextField.getText());
 
-            String filnavn = getUtdataFilnavn(valgtFil, "results", antNaboerEnVei);
-            boolean ok = MyWriter.write(filnavn, tidsserier);
+                String filnavn = getUtdataFilnavn(file, "results", antNaboerEnVei);
+                boolean ok = MyWriter.write(filnavn, tidsserier);
 
-            if (ok) {
-                statusNettverkLabel.setText("<html><font color='green'>File " + filnavn + " created.</font></html>");
-            } else {
-                statusNettverkLabel.setText("<html><font color='red'>File NOT created.</font></html>");
+                if (ok) {
+                    statusNettverkLabel.setText("<html><font color='green'>File " + filnavn + " created.</font></html>");
+                } else {
+                    statusNettverkLabel.setText("<html><font color='red'>File NOT created.</font></html>");
+                }
             }
         }
     }//GEN-LAST:event_lagResultatfilButtonActionPerformed
 
     private void nettverkNullstillButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nettverkNullstillButtonActionPerformed
         valgtFilTextField.setText("");
-        valgtFil = null;
+        selectedFiles = null;
         prosentTextField.setText("");
         absoluttverdiTextField.setText("");
         antNaboerEnVeiTextField.setText("");
@@ -444,47 +463,70 @@ public class MainFrame extends javax.swing.JFrame {
 
     private void beregnButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_beregnButtonActionPerformed
         if (inputIsOK()) {
+            for (int i = 0; i < selectedFiles.length; i++)  {
+                File file = selectedFiles[i];
+                List<Integer> timeSeries = timeSeriesList.get(i);
+                
+                if (NumberUtils.isNumber(prosentTextField.getText())) {
+                    prosent = Double.parseDouble(prosentTextField.getText());
+                    threshold = new ThresholdPercentage(prosent);
+                } else if (NumberUtils.isNumber(absoluttverdiTextField.getText())) {
+                    absoluteValue = Integer.parseInt(absoluttverdiTextField.getText());
+                    threshold = new ThresholdAbsoluteValue(absoluteValue);
+                } else {
+                    throw new IllegalStateException("Percentage is invalid and milliseconds is invalid");
+                }
 
-            if (NumberUtils.isNumber(prosentTextField.getText())) {
-                prosent = Double.parseDouble(prosentTextField.getText());
-                threshold = new ThresholdPercentage(prosent);
-            } else if (NumberUtils.isNumber(absoluttverdiTextField.getText())) {
-                absoluteValue = Integer.parseInt(absoluttverdiTextField.getText());
-                threshold = new ThresholdAbsoluteValue(absoluteValue);
-            } else {
-                throw new IllegalStateException("Percentage is invalid and milliseconds is invalid");
+                cliqueSize = Integer.parseInt(cliqueSizeTextField.getText());
+                int antNaboerEnvei = Integer.parseInt(antNaboerEnVeiTextField.getText());
+                
+                TimeseriesToGraph algorithim = new TimeseriesToGraph(timeSeries, threshold, antNaboerEnvei, SimilarityDefinitions.SYMMETRIC);
+                algorithims.add(algorithim);
+                        
+                final AdjacencyList adjacencyList = algorithim.getAdjacencyList(cliqueSize);
+                final Set<CompleteSubgraph> completeSubgraphs = new CompleteGraphFinder().find(adjacencyList, cliqueSize);
+                numCliquesTextField.setText(String.valueOf(completeSubgraphs.size()));
+                antallNoderTextField.setText(algorithim.getNumNodes().toString());
+                gjennomsnitttextField.setText(algorithim.getAverage().toString());
+                numConnectedComponentsTextField.setText(algorithim.getNumConnectedComponents().toString());
+                numBridgesTextField.setText(algorithim.getNumBridges().toString());
+                numMissingDirectRelationshipsTextField.setText(algorithim.getNumMissingDirectNeighborRelationships().toString());
+                
+                // Calculation complete, enable buttons
+                statusNettverkLabel.setText("Status: calculation complete.");
+                nettverkStatistikkButton.setEnabled(true);
+                lagResultatfilButton.setEnabled(true);
             }
-
-            cliqueSize = Integer.parseInt(cliqueSizeTextField.getText());
-            int antNaboerEnvei = Integer.parseInt(antNaboerEnVeiTextField.getText());
-            algoritme = new TimeseriesToGraph(tidsserie, threshold, antNaboerEnvei, SimilarityDefinitions.SYMMETRIC);
-            final AdjacencyList adjacencyList = algoritme.getAdjacencyList(cliqueSize);
-            final Set<CompleteSubgraph> completeSubgraphs = new CompleteGraphFinder().find(adjacencyList, cliqueSize);
-            numCliquesTextField.setText(String.valueOf(completeSubgraphs.size()));
-            antallNoderTextField.setText(algoritme.getNumNodes().toString());
-            gjennomsnitttextField.setText(algoritme.getAverage().toString());
-            numConnectedComponentsTextField.setText(algoritme.getNumConnectedComponents().toString());
-            numBridgesTextField.setText(algoritme.getNumBridges().toString());
-            numMissingDirectRelationshipsTextField.setText(algoritme.getNumMissingDirectNeighborRelationships().toString());
-            statusNettverkLabel.setText("Status: calculation complete.");
-            nettverkStatistikkButton.setEnabled(true);
-            lagResultatfilButton.setEnabled(true);
         }
     }//GEN-LAST:event_beregnButtonActionPerformed
 
     private void velgInputfilButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_velgInputfilButtonActionPerformed
         JFileChooser chooser = new JFileChooser();
+        chooser.setMultiSelectionEnabled(true);
         chooser.showOpenDialog(this);
-        File nyValgtFil = chooser.getSelectedFile();
-        if (!nyValgtFil.equals(valgtFil)) { // brukeren har valgt en annen fil enn forrige gang
-            valgtFil = nyValgtFil;
-            valgtFilTextField.setText(valgtFil.getAbsolutePath());
+        selectedFiles = chooser.getSelectedFiles();
+        timeSeriesList.clear();
+        
+        // Set text in selected file(s) box
+        if (selectedFiles.length == 1) {
+            valgtFilTextField.setText(selectedFiles[0].getAbsolutePath());
+        } else {
+            valgtFilTextField.setText(String.format("Multiple files (%d)", selectedFiles.length));
+        }
+        
+        // Read time series into list of time series lists
+        for (File file: selectedFiles) {
             try {
-                tidsserie = MyReader.getTidsserie(valgtFil);
+                List<Integer> timeSeries = MyReader.getTidsserie(file);
+                timeSeriesList.add(timeSeries);
+                System.out.println(file.getName());
+                System.out.println(timeSeries.size());  
             } catch (IOException e) {
                 JOptionPane.showMessageDialog(this, "Could not create time series.");
             }
         }
+        System.out.println(selectedFiles.length);
+        System.out.println(timeSeriesList.size());
     }//GEN-LAST:event_velgInputfilButtonActionPerformed
 
     /**
@@ -551,7 +593,7 @@ public class MainFrame extends javax.swing.JFrame {
 
     private boolean inputIsOK() {
 
-        if (tidsserie == null) {
+        if (timeSeriesList == null) {
             return false;
         }
         
@@ -586,11 +628,7 @@ public class MainFrame extends javax.swing.JFrame {
             return false;
         }
 
-        if (valgtFil == null) {
-            return false;
-        }
-
-        if (!valgtFil.exists()) {
+        if (selectedFiles == null) {
             return false;
         }
 
