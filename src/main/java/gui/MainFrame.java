@@ -131,7 +131,7 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
 
-        prosentLabel.setText("Percentage");
+        prosentLabel.setText("Similarity threshold percent");
 
         prosentTextField.setText("1.5");
         prosentTextField.addActionListener(new java.awt.event.ActionListener() {
@@ -298,7 +298,7 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
 
-        absoluttverdiLabel.setText("Absolute value");
+        absoluttverdiLabel.setText("Similarity threshold absolute");
 
         javax.swing.GroupLayout noderPanelLayout = new javax.swing.GroupLayout(noderPanel);
         noderPanel.setLayout(noderPanelLayout);
@@ -382,7 +382,7 @@ public class MainFrame extends javax.swing.JFrame {
                 .addGap(48, 48, 48))
         );
 
-        visibilityGraphtabbedPane.addTab("Network", noderPanel);
+        visibilityGraphtabbedPane.addTab("Similarity Graph", noderPanel);
 
         getContentPane().add(visibilityGraphtabbedPane, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 0, -1, -1));
         visibilityGraphtabbedPane.getAccessibleContext().setAccessibleName("");
@@ -467,6 +467,7 @@ public class MainFrame extends javax.swing.JFrame {
         numBridgesTextField.setText("");
         numMissingDirectRelationshipsTextField.setText("");
         numCliquesTextField.setText("");
+        statusNettverkLabel.setText("");
         lagResultatfilButton.setEnabled(false);
         nettverkStatistikkButton.setEnabled(false);
         tabularFileButton.setEnabled(false);
@@ -554,8 +555,9 @@ public class MainFrame extends javax.swing.JFrame {
                 timeSeriesList.add(timeSeries);
                 System.out.println(file.getName());
                 System.out.println(timeSeries.size());  
-            } catch (IOException e) {
-                JOptionPane.showMessageDialog(this, "Could not create time series.");
+            } catch (Exception e) {
+                statusNettverkLabel.setText("Error: error reading time series");
+                JOptionPane.showMessageDialog(this, "Could not create time series."); 
             }
         }
         System.out.println(selectedFiles.length);
@@ -661,41 +663,60 @@ public class MainFrame extends javax.swing.JFrame {
     private boolean inputIsOK() {
 
         if (timeSeriesList == null) {
+            statusNettverkLabel.setText("Error: no time series found");
             return false;
         }
         
         if (!NumberUtils.isNumber(prosentTextField.getText()) && !NumberUtils.isNumber(absoluttverdiTextField.getText())) {
+            statusNettverkLabel.setText("Error: no threshold entered or formatting error");
+            return false;
+        }
+        
+        // Percent ovverides absolute so can't have both
+        if (NumberUtils.isNumber(prosentTextField.getText()) && NumberUtils.isNumber(absoluttverdiTextField.getText())) {
+            statusNettverkLabel.setText("Error: can't have both percent and absolute threshold");
             return false;
         }
         
         String tempAntNaboerEnvei = antNaboerEnVeiTextField.getText();
         
-        if (tempAntNaboerEnvei == null)
+        if (tempAntNaboerEnvei == null) {
+            statusNettverkLabel.setText("Error: no num neighbours entered or formatting error");
             return false;
+        }
         
         if (StringUtils.isBlank(tempAntNaboerEnvei)) {
+            statusNettverkLabel.setText("Error: no num neighbours entered or formatting error");
             return false;
         }
         
         try {
             Integer.parseInt(tempAntNaboerEnvei);
         } catch (NumberFormatException e) {
+            statusNettverkLabel.setText("Error: no num neighbours entered or formatting error");
             return false;
         }
         
         final String cliqueSizeStr = cliqueSizeTextField.getText();
         
         if (cliqueSizeStr == null || StringUtils.isBlank(cliqueSizeStr)) {
+            statusNettverkLabel.setText("Error: no clique size entered or formatting error");
             return false;
         }
         
         try {
             Integer.parseInt(cliqueSizeStr);
         } catch (NumberFormatException e) {
+            statusNettverkLabel.setText("Error: no clique size entered or formatting error");
             return false;
         }
 
-        return selectedFiles != null;
+        if (selectedFiles == null) {
+            statusNettverkLabel.setText("Error: no files selected");
+            return false;
+        }
+
+        return true;
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

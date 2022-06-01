@@ -69,8 +69,8 @@
         <Container class="javax.swing.JPanel" name="noderPanel">
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
-              <JTabbedPaneConstraints tabName="Network">
-                <Property name="tabTitle" type="java.lang.String" value="Network"/>
+              <JTabbedPaneConstraints tabName="Similarity Graph">
+                <Property name="tabTitle" type="java.lang.String" value="Similarity Graph"/>
               </JTabbedPaneConstraints>
             </Constraint>
           </Constraints>
@@ -205,7 +205,7 @@
             </Component>
             <Component class="javax.swing.JLabel" name="prosentLabel">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Percentage"/>
+                <Property name="text" type="java.lang.String" value="Similarity threshold percent"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="prosentTextField">
@@ -459,7 +459,7 @@
             </Component>
             <Component class="javax.swing.JLabel" name="absoluttverdiLabel">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Absolute value"/>
+                <Property name="text" type="java.lang.String" value="Similarity threshold absolute"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="absoluttverdiTextField">
