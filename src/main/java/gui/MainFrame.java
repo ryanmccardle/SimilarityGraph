@@ -416,9 +416,9 @@ public class MainFrame extends javax.swing.JFrame {
                 boolean summary_ok = MyWriter.writeShortSummary(fileName, antNaboerTilSummary, localClusteringCoefficients, true);
 
                 if (settings_ok & results_ok & summary_ok) {
-                    statusNettverkLabel.setText("<html><font color='green'>File " + fileName + " created.</font></html>");
+                    statusNettverkLabel.setText("Status: File " + fileName + " created.");
                 } else {
-                    statusNettverkLabel.setText("<html><font color='red'>File NOT created.</font></html>");
+                    statusNettverkLabel.setText("<html><font color='red'>Error: File NOT created.</font></html>");
                 }
             }
         }
@@ -438,7 +438,7 @@ public class MainFrame extends javax.swing.JFrame {
                     tidsserier.add(prs, alg.getNumSimilarNeighbors());
                 }
 
-                statusNettverkLabel.setText("Creating file ...");
+                statusNettverkLabel.setText("Status: Creating file(s) ...");
 
                 int antNaboerEnVei = Integer.parseInt(antNaboerEnVeiTextField.getText());
 
@@ -446,9 +446,9 @@ public class MainFrame extends javax.swing.JFrame {
                 boolean ok = MyWriter.write(filnavn, tidsserier);
 
                 if (ok) {
-                    statusNettverkLabel.setText("<html><font color='green'>File " + filnavn + " created.</font></html>");
+                    statusNettverkLabel.setText("Status: File " + filnavn + " created.");
                 } else {
-                    statusNettverkLabel.setText("<html><font color='red'>File NOT created.</font></html>");
+                    statusNettverkLabel.setText("<html><font color='red'>Error: File NOT created.</font></html>");
                 }
             }
         }
@@ -535,20 +535,10 @@ public class MainFrame extends javax.swing.JFrame {
         algorithims.clear();
         timeSeriesList.clear();
         
-        // Set text in selected file(s) box
-        switch (selectedFiles.length) {
-            case 1:
-                valgtFilTextField.setText(selectedFiles[0].getAbsolutePath());
-                break;
-            case 0:
-                valgtFilTextField.setText("");
-                break;
-            default:
-                valgtFilTextField.setText(String.format("Multiple files (%d)", selectedFiles.length));
-                break;
-        }
+        
         
         // Read time series into list of time series lists
+        boolean successfulRead = true;
         for (File file: selectedFiles) {
             try {
                 List<Integer> timeSeries = MyReader.getTidsserie(file);
@@ -556,12 +546,29 @@ public class MainFrame extends javax.swing.JFrame {
                 System.out.println(file.getName());
                 System.out.println(timeSeries.size());  
             } catch (Exception e) {
-                statusNettverkLabel.setText("Error: error reading time series");
-                JOptionPane.showMessageDialog(this, "Could not create time series."); 
+                successfulRead = false;
             }
         }
-        System.out.println(selectedFiles.length);
-        System.out.println(timeSeriesList.size());
+        
+        if (successfulRead) {
+            // Set text in selected file(s) box
+            switch (selectedFiles.length) {
+                case 1:
+                    valgtFilTextField.setText(selectedFiles[0].getAbsolutePath());
+                    break;
+                case 0:
+                    valgtFilTextField.setText("");
+                    break;
+                default:
+                    valgtFilTextField.setText(String.format("Multiple files (%d)", selectedFiles.length));
+                    break;
+            }
+        } else {
+            selectedFiles = null;
+            timeSeriesList.clear();
+            statusNettverkLabel.setText("<html><font color='red'>Error: error reading time series</font></html>");
+        }
+
     }//GEN-LAST:event_velgInputfilButtonActionPerformed
 
     private void tabularFileButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tabularFileButtonActionPerformed
@@ -590,9 +597,9 @@ public class MainFrame extends javax.swing.JFrame {
                 boolean tabular_ok = MyWriter.writeTabularLine(fileName, file.getAbsolutePath(), prosent, antNaboerEnVei, cliqueSize, absoluteValue, numCliques, antallNoder, gjennomsnitt, numConnectedComponents, numBridges, numMissingDirectRelationships, antNaboerTilSummary, localClusteringCoefficients);
 
                 if (header_ok & tabular_ok) {
-                    statusNettverkLabel.setText("<html><font color='green'>File " + fileName + " created.</font></html>");
+                    statusNettverkLabel.setText("Status: File " + fileName + " created.");
                 } else {
-                    statusNettverkLabel.setText("<html><font color='red'>File NOT created.</font></html>");
+                    statusNettverkLabel.setText("<html><font color='red'>Error: File NOT created.</font></html>");
                 }
             }
         }
@@ -663,56 +670,56 @@ public class MainFrame extends javax.swing.JFrame {
     private boolean inputIsOK() {
 
         if (timeSeriesList == null) {
-            statusNettverkLabel.setText("Error: no time series found");
+            statusNettverkLabel.setText("<html><font color='red'>Error: no time series found</font></html>");
             return false;
         }
         
         if (!NumberUtils.isNumber(prosentTextField.getText()) && !NumberUtils.isNumber(absoluttverdiTextField.getText())) {
-            statusNettverkLabel.setText("Error: no threshold entered or formatting error");
+            statusNettverkLabel.setText("<html><font color='red'>Error: no threshold entered or formatting error</font></html>");
             return false;
         }
         
         // Percent ovverides absolute so can't have both
         if (NumberUtils.isNumber(prosentTextField.getText()) && NumberUtils.isNumber(absoluttverdiTextField.getText())) {
-            statusNettverkLabel.setText("Error: can't have both percent and absolute threshold");
+            statusNettverkLabel.setText("<html><font color='red'>Error: can't have both percent and absolute threshold</font></html>");
             return false;
         }
         
         String tempAntNaboerEnvei = antNaboerEnVeiTextField.getText();
         
         if (tempAntNaboerEnvei == null) {
-            statusNettverkLabel.setText("Error: no num neighbours entered or formatting error");
+            statusNettverkLabel.setText("<html><font color='red'>Error: no num neighbours entered or formatting error</font></html>");
             return false;
         }
         
         if (StringUtils.isBlank(tempAntNaboerEnvei)) {
-            statusNettverkLabel.setText("Error: no num neighbours entered or formatting error");
+            statusNettverkLabel.setText("<html><font color='red'>Error: no num neighbours entered or formatting error</font></html>");
             return false;
         }
         
         try {
             Integer.parseInt(tempAntNaboerEnvei);
         } catch (NumberFormatException e) {
-            statusNettverkLabel.setText("Error: no num neighbours entered or formatting error");
+            statusNettverkLabel.setText("<html><font color='red'>Error: no num neighbours entered or formatting error</font></html>");
             return false;
         }
         
         final String cliqueSizeStr = cliqueSizeTextField.getText();
         
         if (cliqueSizeStr == null || StringUtils.isBlank(cliqueSizeStr)) {
-            statusNettverkLabel.setText("Error: no clique size entered or formatting error");
+            statusNettverkLabel.setText("<html><font color='red'>Error: no clique size entered or formatting error</font></html>");
             return false;
         }
         
         try {
             Integer.parseInt(cliqueSizeStr);
         } catch (NumberFormatException e) {
-            statusNettverkLabel.setText("Error: no clique size entered or formatting error");
+            statusNettverkLabel.setText("<html><font color='red'>Error: no clique size entered or formatting error</font></html>");
             return false;
         }
 
         if (selectedFiles == null) {
-            statusNettverkLabel.setText("Error: no files selected");
+            statusNettverkLabel.setText("<html><font color='red'>Error: no files selected</font></html>");
             return false;
         }
 
