@@ -62,7 +62,7 @@ public class MyWriter {
         return true;
     }
     
-    public static boolean writeTabularHeader(String outputFileName) {
+    public static boolean writeTabularHeader(String outputFileName, int maxNeighbors) {
         Path path = Paths.get(outputFileName);
         
         try (BufferedWriter writer = Files.newBufferedWriter(path, OVERWRITE_OPTIONS)) {  
@@ -80,11 +80,9 @@ public class MyWriter {
             writer.append("Num missing edges between direct neighbors\t");
             writer.append("Num cliques\t");
             
-            writer.append("Num nodes 4 neighbors\t");
-            writer.append("Num nodes 3 neighbors\t");
-            writer.append("Num nodes 2 neighbors\t");
-            writer.append("Num nodes 1 neighbors\t");
-            writer.append("Num nodes 0 neighbors");
+            for (int i = maxNeighbors - 1; i >= 0; i--)  {
+                writer.append("Num nodes " + i + " neighbors\t");
+            }
             writer.newLine();
         } catch (IOException e) {
             return false;
@@ -93,7 +91,7 @@ public class MyWriter {
         return true;
     }
     
-    public static boolean writeTabularLine(String outputFileName, String inputFileName, Double prosent, Integer antNaboerEnvei, Integer cliqueSize, Integer absoluteValue, Integer numCliques, Integer antallNoder, Double gjennomsnitt, Integer numConnectedComponents, Integer numBridges, Integer numMissingDirectRelationships, Map<Integer,Summary> antNaboerTilSummary, List<BigDecimal> localClusteringCoefficients) {
+    public static boolean writeTabularLine(String outputFileName, String inputFileName, Double prosent, Integer antNaboerEnvei, Integer cliqueSize, Integer absoluteValue, Integer numCliques, Integer antallNoder, Double gjennomsnitt, Integer numConnectedComponents, Integer numBridges, Integer numMissingDirectRelationships, Map<Integer,Summary> antNaboerTilSummary, List<BigDecimal> localClusteringCoefficients, int maxNeighbors) {
         Path path = Paths.get(outputFileName);
         
         try (BufferedWriter writer = Files.newBufferedWriter(path, APPEND_OPTIONS)) {   
@@ -110,6 +108,11 @@ public class MyWriter {
             writer.append(numBridges + "\t");
             writer.append(numMissingDirectRelationships + "\t");
             writer.append(numCliques + "\t");
+            
+            // Prepend with empty cells if has fewer max neighbors
+            for (int i = 0; i < maxNeighbors - antNaboerTilSummary.entrySet().size(); i++)  {
+                writer.append("\t");
+            }
             
             for (Entry<Integer,Summary> entry : antNaboerTilSummary.entrySet()) {
                 Summary summary = entry.getValue();

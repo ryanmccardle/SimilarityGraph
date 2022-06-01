@@ -577,11 +577,19 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_velgInputfilButtonActionPerformed
 
     private void tabularFileButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tabularFileButtonActionPerformed
-        File firstFile = selectedFiles[0];
-        final String fileName = firstFile.getAbsolutePath() + "_tabular_output.txt";
-        boolean header_ok = MyWriter.writeTabularHeader(fileName);
         
         if (inputIsOK()) {
+            // Count max number of nodes, inefficient but not worth optimizing at this stage
+            int maxNeighbors = 0;
+            for (TimeseriesToGraph algorithim : algorithims) {
+                int neighborCount = algorithim.getNumNeighborsToSummary().size();
+                maxNeighbors = Math.max(neighborCount, maxNeighbors);
+            }
+            
+            File firstFile = selectedFiles[0];
+            final String fileName = firstFile.getAbsolutePath() + "_tabular_output.txt";
+            boolean header_ok = MyWriter.writeTabularHeader(fileName, maxNeighbors);
+            
             for (int i = 0; i < selectedFiles.length; i++)  {
                 File file = selectedFiles[i];
                 TimeseriesToGraph algorithim = algorithims.get(i);
@@ -599,7 +607,7 @@ public class MainFrame extends javax.swing.JFrame {
                 Integer numBridges = algorithim.getNumBridges();
                 Integer numMissingDirectRelationships = algorithim.getNumMissingDirectNeighborRelationships();   
                 
-                boolean tabular_ok = MyWriter.writeTabularLine(fileName, file.getAbsolutePath(), prosent, antNaboerEnVei, cliqueSize, absoluteValue, numCliques, antallNoder, gjennomsnitt, numConnectedComponents, numBridges, numMissingDirectRelationships, antNaboerTilSummary, localClusteringCoefficients);
+                boolean tabular_ok = MyWriter.writeTabularLine(fileName, file.getAbsolutePath(), prosent, antNaboerEnVei, cliqueSize, absoluteValue, numCliques, antallNoder, gjennomsnitt, numConnectedComponents, numBridges, numMissingDirectRelationships, antNaboerTilSummary, localClusteringCoefficients, maxNeighbors);
 
                 if (header_ok & tabular_ok) {
                     statusNettverkLabel.setText("Status: File " + fileName + " created.");
