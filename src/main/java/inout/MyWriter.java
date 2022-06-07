@@ -19,9 +19,13 @@ public class MyWriter {
     public static OpenOption APPEND_OPTIONS[] = new OpenOption[] {StandardOpenOption.WRITE, StandardOpenOption.APPEND};
     public static OpenOption OVERWRITE_OPTIONS[] = new OpenOption[] {StandardOpenOption.WRITE, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING};
     
-    public static boolean writeMultigraphSummary(String fileName, Map<Integer,Summary> antNaboerTilSummary, List<Integer> numSimilarNeighborsPerNode) {
-        final Path path = Paths.get(fileName);
-        try (BufferedWriter writer = Files.newBufferedWriter(path)) {
+    public static boolean writeMultigraphSummary(Path outputFileName, Map<Integer,Summary> antNaboerTilSummary, List<Integer> numSimilarNeighborsPerNode) {
+        try {
+            Files.createDirectories(outputFileName.getParent());  
+        } catch (IOException ex) {
+            return false;
+        }
+        try (BufferedWriter writer = Files.newBufferedWriter(outputFileName)) {
             writer.write("Number of neighbors\tNumber of nodes\tAccumulated sum\n");
             
             for (Entry<Integer,Summary> entry : antNaboerTilSummary.entrySet()) {
@@ -41,10 +45,14 @@ public class MyWriter {
         return true;
     }
     
-    public static boolean writeSettings(String outputFileName, String inputFileName, Double prosent, Integer antNaboerEnvei, Integer cliqueSize, Integer absoluteValue, boolean append) {
-        Path path = Paths.get(outputFileName);
+    public static boolean writeSettings(Path outputFileName, String inputFileName, Double prosent, Integer antNaboerEnvei, Integer cliqueSize, Integer absoluteValue, boolean append) {
+        try {
+            Files.createDirectories(outputFileName.getParent());  
+        } catch (IOException ex) {
+            return false;
+        }
         
-        try (BufferedWriter writer = Files.newBufferedWriter(path, append?APPEND_OPTIONS:OVERWRITE_OPTIONS)) {   
+        try (BufferedWriter writer = Files.newBufferedWriter(outputFileName, append?APPEND_OPTIONS:OVERWRITE_OPTIONS)) {   
             writer.append("Input filename\tPercentage\tNum neighbors one way\tClique size\tAbsolute value");
             writer.newLine();
             
@@ -62,10 +70,13 @@ public class MyWriter {
         return true;
     }
     
-    public static boolean writeTabularHeader(String outputFileName, int maxNeighbors) {
-        Path path = Paths.get(outputFileName);
-        
-        try (BufferedWriter writer = Files.newBufferedWriter(path, OVERWRITE_OPTIONS)) {  
+    public static boolean writeTabularHeader(Path outputFileName, int maxNeighbors) {  
+        try {
+            Files.createDirectories(outputFileName.getParent());  
+        } catch (IOException ex) {
+            return false;
+        }
+        try (BufferedWriter writer = Files.newBufferedWriter(outputFileName, OVERWRITE_OPTIONS)) {  
             writer.append("Input filename\t");
             
             writer.append("Percentage\t");
@@ -79,10 +90,14 @@ public class MyWriter {
             writer.append("Num bridges\t");
             writer.append("Num missing edges between direct neighbors\t");
             writer.append("Num cliques\t");
+            writer.append("Maximum edges\t");
+            
             
             for (int i = maxNeighbors - 1; i >= 0; i--)  {
                 writer.append("Num nodes " + i + " neighbors\t");
             }
+            
+            writer.append("Input filepath");
             writer.newLine();
         } catch (IOException e) {
             return false;
@@ -91,11 +106,17 @@ public class MyWriter {
         return true;
     }
     
-    public static boolean writeTabularLine(String outputFileName, String inputFileName, Double prosent, Integer antNaboerEnvei, Integer cliqueSize, Integer absoluteValue, Integer numCliques, Integer antallNoder, Double gjennomsnitt, Integer numConnectedComponents, Integer numBridges, Integer numMissingDirectRelationships, Map<Integer,Summary> antNaboerTilSummary, List<BigDecimal> localClusteringCoefficients, int maxNeighbors) {
-        Path path = Paths.get(outputFileName);
+    public static boolean writeTabularLine(Path outputFileName, String inputFileName, Double prosent, Integer antNaboerEnvei, Integer cliqueSize, Integer absoluteValue, Integer numCliques, Integer antallNoder, Double gjennomsnitt, Integer numConnectedComponents, Integer numBridges, Integer numMissingDirectRelationships, Map<Integer,Summary> antNaboerTilSummary, List<BigDecimal> localClusteringCoefficients, int maxNeighborsInAllFiles) {
+        try {
+            Files.createDirectories(outputFileName.getParent());  
+        } catch (IOException ex) {
+            return false;
+        }
+        Path inputPath = Paths.get(inputFileName); 
+        Integer maxEdges = antNaboerTilSummary.entrySet().size() - 1;
         
-        try (BufferedWriter writer = Files.newBufferedWriter(path, APPEND_OPTIONS)) {   
-            writer.append(inputFileName + "\t");
+        try (BufferedWriter writer = Files.newBufferedWriter(outputFileName, APPEND_OPTIONS)) {   
+            writer.append(inputPath.getFileName().toString() + "\t");
             
             writer.append(prosent + "\t");
             writer.append(antNaboerEnvei + "\t");
@@ -108,9 +129,10 @@ public class MyWriter {
             writer.append(numBridges + "\t");
             writer.append(numMissingDirectRelationships + "\t");
             writer.append(numCliques + "\t");
+            writer.append(maxEdges + "\t");
             
             // Prepend with empty cells if has fewer max neighbors
-            for (int i = 0; i < maxNeighbors - antNaboerTilSummary.entrySet().size(); i++)  {
+            for (int i = 0; i < maxNeighborsInAllFiles - antNaboerTilSummary.entrySet().size(); i++)  {
                 writer.append("\t");
             }
             
@@ -118,6 +140,8 @@ public class MyWriter {
                 Summary summary = entry.getValue();
                 writer.append(summary.getAntallNoder() + "\t");
             }
+            
+            writer.append(inputPath.toString() + "\t");
             
             writer.newLine();
         } catch (IOException e) {
@@ -127,10 +151,13 @@ public class MyWriter {
         return true;
     }
                 
-    public static boolean writeResults(String outputFileName, Integer numCliques, Integer antallNoder, Double gjennomsnitt, Integer numConnectedComponents, Integer numBridges, Integer numMissingDirectRelationships,  boolean append) {
-        Path path = Paths.get(outputFileName);
-        
-        try (BufferedWriter writer = Files.newBufferedWriter(path, append?APPEND_OPTIONS:OVERWRITE_OPTIONS)) {            
+    public static boolean writeResults(Path outputFileName, Integer numCliques, Integer antallNoder, Double gjennomsnitt, Integer numConnectedComponents, Integer numBridges, Integer numMissingDirectRelationships,  boolean append) {
+        try {
+            Files.createDirectories(outputFileName.getParent());  
+        } catch (IOException ex) {
+            return false;
+        }
+        try (BufferedWriter writer = Files.newBufferedWriter(outputFileName, append?APPEND_OPTIONS:OVERWRITE_OPTIONS)) {            
             writer.append("Num nodes\tAvg num equal neighbors\tNum connected components\tNum bridges\tNum missing edges between direct neighbours\tNum cliques");
             writer.newLine();
             
@@ -140,6 +167,7 @@ public class MyWriter {
             writer.append(numBridges + "\t");
             writer.append(numMissingDirectRelationships + "\t");
             writer.append(numCliques + "");
+
             writer.newLine();
             writer.newLine();
         } catch (IOException e) {
@@ -150,10 +178,13 @@ public class MyWriter {
     }
     
     
-    public static boolean writeShortSummary(String fileName, Map<Integer,Summary> antNaboerTilSummary, List<BigDecimal> localClusteringCoefficients, boolean append) {
-        Path path = Paths.get(fileName);
- 
-        try (BufferedWriter writer = Files.newBufferedWriter(path, append?APPEND_OPTIONS:OVERWRITE_OPTIONS)) {
+    public static boolean writeShortSummary(Path outputFileName, Map<Integer,Summary> antNaboerTilSummary, List<BigDecimal> localClusteringCoefficients, boolean append) {
+        try {
+            Files.createDirectories(outputFileName.getParent());  
+        } catch (IOException ex) {
+            return false;
+        }
+        try (BufferedWriter writer = Files.newBufferedWriter(outputFileName, append?APPEND_OPTIONS:OVERWRITE_OPTIONS)) {
             writer.append("Number of neighbors\tNumber of nodes\tAccumulated sum\n");
             
             for (Entry<Integer,Summary> entry : antNaboerTilSummary.entrySet()) {
@@ -174,9 +205,13 @@ public class MyWriter {
         return true;
     }
     
-    public static boolean writeSummary(String fileName, List<Integer> antallNaboerListe, Map<Integer,Summary> antNaboerTilSummary, boolean append) {
-        Path path = Paths.get(fileName);
-        try (BufferedWriter writer = Files.newBufferedWriter(path, append?APPEND_OPTIONS:OVERWRITE_OPTIONS)) {   
+    public static boolean writeSummary(Path outputFileName, List<Integer> antallNaboerListe, Map<Integer,Summary> antNaboerTilSummary, boolean append) {
+        try {
+            Files.createDirectories(outputFileName.getParent());  
+        } catch (IOException ex) {
+            return false;
+        }
+        try (BufferedWriter writer = Files.newBufferedWriter(outputFileName, append?APPEND_OPTIONS:OVERWRITE_OPTIONS)) {   
             for (int i = 0; i < antallNaboerListe.size(); ++i) {
                 writer.write(antallNaboerListe.get(i) + "\n");
             }
@@ -196,9 +231,13 @@ public class MyWriter {
         return true;
     }
     
-    public static <T extends Number> boolean writeStierMap(String fileName, Map<Integer, List<T>> numEquals, List<Integer> tidsserie) {
-        Path path = Paths.get(fileName);
-        try (BufferedWriter writer = Files.newBufferedWriter(path, OVERWRITE_OPTIONS)) { 
+    public static <T extends Number> boolean writeStierMap(Path outputFileName, Map<Integer, List<T>> numEquals, List<Integer> tidsserie) {
+        try {
+            Files.createDirectories(outputFileName.getParent());  
+        } catch (IOException ex) {
+            return false;
+        }
+        try (BufferedWriter writer = Files.newBufferedWriter(outputFileName, OVERWRITE_OPTIONS)) { 
             
             writer.write("Pst");
             writer.write(";");
@@ -229,13 +268,16 @@ public class MyWriter {
         return true;
     }
     
-    public static boolean writeDirectedNeighborhoodOutput(String fileName, 
+    public static boolean writeDirectedNeighborhoodOutput(Path outputFileName, 
             List<Integer> posSums, List<Integer> negSums, Double gjsnSumPos, Double gjsnSumNeg,
             Integer minSum, Integer maxSum, Integer minAbsoluteSum, Integer maxAbsoluteSum) {
         
-        
-        Path path = Paths.get(fileName);
-        try (BufferedWriter writer = Files.newBufferedWriter(path)) {  
+        try {
+            Files.createDirectories(outputFileName.getParent());  
+        } catch (IOException ex) {
+            return false;
+        }
+        try (BufferedWriter writer = Files.newBufferedWriter(outputFileName)) {  
             writer.write("Absolutte summer: \n");
             for (int i = 0; i < posSums.size(); ++i) {
                 writer.write(posSums.get(i) + "\n");
@@ -260,9 +302,13 @@ public class MyWriter {
         return true;
     }
     
-    public static boolean writeList(String fileName, List<Integer> tall) {
-        Path path = Paths.get(fileName);
-        try (BufferedWriter writer = Files.newBufferedWriter(path)) {   
+    public static boolean writeList(Path outputFileName, List<Integer> tall) {
+        try {
+            Files.createDirectories(outputFileName.getParent());  
+        } catch (IOException ex) {
+            return false;
+        }
+        try (BufferedWriter writer = Files.newBufferedWriter(outputFileName)) {   
             for (int i = 0; i < tall.size(); ++i) {
                 writer.write(tall.get(i) + "\n");
             }
@@ -273,9 +319,13 @@ public class MyWriter {
         return true;
     }
     
-    public static boolean writeIntArray(String fileName, int[] tall) {
-        Path path = Paths.get(fileName);
-        try (BufferedWriter writer = Files.newBufferedWriter(path)) {   
+    public static boolean writeIntArray(Path outputFileName, int[] tall) {
+        try {
+            Files.createDirectories(outputFileName.getParent());  
+        } catch (IOException ex) {
+            return false;
+        }
+        try (BufferedWriter writer = Files.newBufferedWriter(outputFileName)) {   
             for (int i = 0; i < tall.length; ++i) {
                 writer.write(tall[i] + "\n");
             }
@@ -286,10 +336,14 @@ public class MyWriter {
         return true;
     }
 
-    public static boolean write(String fileName, List<List<Integer>> tidsserier) {
-        Path path = Paths.get(fileName);
+    public static boolean write(Path outputFileName, List<List<Integer>> tidsserier) {
+        try {
+            Files.createDirectories(outputFileName.getParent());  
+        } catch (IOException ex) {
+            return false;
+        }
         StringBuilder sb = new StringBuilder("");
-        try (BufferedWriter writer = Files.newBufferedWriter(path)) {   
+        try (BufferedWriter writer = Files.newBufferedWriter(outputFileName)) {   
             int antallTall = tidsserier.get(1).size();
             int antallTidsserier = tidsserier.size();
             

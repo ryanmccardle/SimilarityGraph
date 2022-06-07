@@ -25,6 +25,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import utils.SimilarityDefinitions;
 import vo.Summary;
+import java.nio.file.Paths;
+import java.nio.file.Path;
 
 public class MainFrame extends javax.swing.JFrame {
     // Inputs
@@ -408,7 +410,7 @@ public class MainFrame extends javax.swing.JFrame {
                 final int antNaboerEnVei = Integer.parseInt(antNaboerEnVeiTextField.getText());
                 final String fileName = getNettverkStatistikkUtdataFilnavn(file, antNaboerEnVei, threshold); // threshold
 
-                boolean settings_ok = MyWriter.writeSettings(fileName, file.getAbsolutePath(), prosent, antNaboerEnvei, cliqueSize, absoluteValue, false);
+                boolean settings_ok = MyWriter.writeSettings(Paths.get(fileName), file.getAbsolutePath(), prosent, antNaboerEnvei, cliqueSize, absoluteValue, false);
                 
                 Integer numCliques = algorithim.getNumberOfCliques(cliqueSize);
                 Integer antallNoder = algorithim.getNumNodes();
@@ -416,9 +418,9 @@ public class MainFrame extends javax.swing.JFrame {
                 Integer numConnectedComponents = algorithim.getNumConnectedComponents();
                 Integer numBridges = algorithim.getNumBridges();
                 Integer numMissingDirectRelationships = algorithim.getNumMissingDirectNeighborRelationships();   
-                boolean results_ok = MyWriter.writeResults(fileName, numCliques, antallNoder, gjennomsnitt, numConnectedComponents, numBridges, numMissingDirectRelationships, true);
+                boolean results_ok = MyWriter.writeResults(Paths.get(fileName), numCliques, antallNoder, gjennomsnitt, numConnectedComponents, numBridges, numMissingDirectRelationships, true);
                 
-                boolean summary_ok = MyWriter.writeShortSummary(fileName, antNaboerTilSummary, localClusteringCoefficients, true);
+                boolean summary_ok = MyWriter.writeShortSummary(Paths.get(fileName), antNaboerTilSummary, localClusteringCoefficients, true);
 
                 if (settings_ok & results_ok & summary_ok) {
                     statusNettverkLabel.setText("Status: File " + fileName + " created.");
@@ -448,7 +450,7 @@ public class MainFrame extends javax.swing.JFrame {
                 int antNaboerEnVei = Integer.parseInt(antNaboerEnVeiTextField.getText());
 
                 String filnavn = getUtdataFilnavn(file, "results", antNaboerEnVei);
-                boolean ok = MyWriter.write(filnavn, tidsserier);
+                boolean ok = MyWriter.write(Paths.get(filnavn), tidsserier);
 
                 if (ok) {
                     statusNettverkLabel.setText("Status: File " + filnavn + " created.");
@@ -580,15 +582,16 @@ public class MainFrame extends javax.swing.JFrame {
         
         if (inputIsOK()) {
             // Count max number of nodes, inefficient but not worth optimizing at this stage
-            int maxNeighbors = 0;
+            int maxNeighborsInAllFiles = 0;
             for (TimeseriesToGraph algorithim : algorithims) {
                 int neighborCount = algorithim.getNumNeighborsToSummary().size();
-                maxNeighbors = Math.max(neighborCount, maxNeighbors);
+                maxNeighborsInAllFiles = Math.max(neighborCount, maxNeighborsInAllFiles);
             }
             
             File firstFile = selectedFiles[0];
-            final String fileName = firstFile.getAbsolutePath() + "_tabular_output.txt";
-            boolean header_ok = MyWriter.writeTabularHeader(fileName, maxNeighbors);
+            final Path outputFileName = Paths.get(firstFile.getParent(), "output", firstFile.getName() + "_tabular_output.txt");
+            
+            boolean header_ok = MyWriter.writeTabularHeader(outputFileName, maxNeighborsInAllFiles);
             
             for (int i = 0; i < selectedFiles.length; i++)  {
                 File file = selectedFiles[i];
@@ -607,10 +610,10 @@ public class MainFrame extends javax.swing.JFrame {
                 Integer numBridges = algorithim.getNumBridges();
                 Integer numMissingDirectRelationships = algorithim.getNumMissingDirectNeighborRelationships();   
                 
-                boolean tabular_ok = MyWriter.writeTabularLine(fileName, file.getAbsolutePath(), prosent, antNaboerEnVei, cliqueSize, absoluteValue, numCliques, antallNoder, gjennomsnitt, numConnectedComponents, numBridges, numMissingDirectRelationships, antNaboerTilSummary, localClusteringCoefficients, maxNeighbors);
+                boolean tabular_ok = MyWriter.writeTabularLine(outputFileName, file.getAbsolutePath(), prosent, antNaboerEnVei, cliqueSize, absoluteValue, numCliques, antallNoder, gjennomsnitt, numConnectedComponents, numBridges, numMissingDirectRelationships, antNaboerTilSummary, localClusteringCoefficients, maxNeighborsInAllFiles);
 
                 if (header_ok & tabular_ok) {
-                    statusNettverkLabel.setText("Status: File " + fileName + " created.");
+                    statusNettverkLabel.setText("Status: File " + outputFileName + " created.");
                 } else {
                     statusNettverkLabel.setText("<html><font color='red'>Error: File NOT created.</font></html>");
                 }
@@ -657,7 +660,7 @@ public class MainFrame extends javax.swing.JFrame {
         String navn = file.getName();
         navn = navn.substring(0, navn.lastIndexOf("."));
         String resultatPath = absolutePath.substring(0, absolutePath.lastIndexOf(File.separator));
-        String resultatFilNavn = resultatPath + File.separator + navn + "_network_statistics_numNeighbors_" + antNaboerTilHoyre.toString();
+        String resultatFilNavn = resultatPath + File.separator + "output" + File.separator + navn + "_network_statistics_numNeighbors_" + antNaboerTilHoyre.toString();
         if (threshold.getThresholdType() == ThresholdType.ABSOLUTE_VALUE) {
             resultatFilNavn += "_absolute_" + threshold.getRawInput() +  ".txt";
         } else {
@@ -672,10 +675,10 @@ public class MainFrame extends javax.swing.JFrame {
         navn = navn.substring(0, navn.lastIndexOf("."));
         String resultatPath = absolutePath.substring(0, absolutePath.lastIndexOf(File.separator));
         if (antNaboerEnVei != null) { // nettverk
-            String resultatFilNavn = resultatPath + File.separator + navn + "_numNeighborsOneWay" + antNaboerEnVei + "_" +  extension + ".txt";
+            String resultatFilNavn = resultatPath + File.separator + "output" + File.separator + navn + "_numNeighborsOneWay" + antNaboerEnVei + "_" +  extension + ".txt";
             return resultatFilNavn;
         } else { // symboldynamikk
-            String resultatFilNavn = resultatPath + File.separator + navn + "_" +  extension + ".txt";
+            String resultatFilNavn = resultatPath + File.separator + "output" + File.separator + navn + "_" +  extension + ".txt";
             return resultatFilNavn;
         }
     }
