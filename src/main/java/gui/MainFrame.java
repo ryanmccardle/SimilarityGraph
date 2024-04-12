@@ -27,6 +27,7 @@ import utils.SimilarityDefinitions;
 import vo.Summary;
 import java.nio.file.Paths;
 import java.nio.file.Path;
+import org.apache.commons.cli.*;
 
 public class MainFrame extends javax.swing.JFrame {
     // Inputs
@@ -638,6 +639,19 @@ public class MainFrame extends javax.swing.JFrame {
         }
     }// GEN-LAST:event_beregnButtonActionPerformed
 
+    private void loadFile(File file) {
+        try {
+            List<Integer> timeSeries = MyReader.getTidsserie(file);
+            timeSeriesList.add(timeSeries);
+            System.out.println(file.getName());
+            System.out.println(timeSeries.size());
+        } catch (Exception e) {
+            selectedFiles = null;
+            timeSeriesList.clear();
+            statusNettverkLabel.setText("<html><font color='red'>Error: error reading time series</font></html>");
+        }
+    }
+
     private void velgInputfilButtonActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_velgInputfilButtonActionPerformed
         JFileChooser chooser = new JFileChooser();
         chooser.setMultiSelectionEnabled(true);
@@ -651,14 +665,7 @@ public class MainFrame extends javax.swing.JFrame {
         // Read time series into list of time series lists
         boolean successfulRead = true;
         for (File file : selectedFiles) {
-            try {
-                List<Integer> timeSeries = MyReader.getTidsserie(file);
-                timeSeriesList.add(timeSeries);
-                System.out.println(file.getName());
-                System.out.println(timeSeries.size());
-            } catch (Exception e) {
-                successfulRead = false;
-            }
+            loadFile(file);
         }
 
         if (successfulRead) {
@@ -674,10 +681,6 @@ public class MainFrame extends javax.swing.JFrame {
                     valgtFilTextField.setText(String.format("Multiple files (%d)", selectedFiles.length));
                     break;
             }
-        } else {
-            selectedFiles = null;
-            timeSeriesList.clear();
-            statusNettverkLabel.setText("<html><font color='red'>Error: error reading time series</font></html>");
         }
 
     }// GEN-LAST:event_velgInputfilButtonActionPerformed
@@ -763,7 +766,71 @@ public class MainFrame extends javax.swing.JFrame {
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> {
-            new MainFrame().setVisible(true);
+            MainFrame mainFrame = new MainFrame();
+
+            // Create Options object
+            Options options = new Options();
+
+            // Add options
+            options.addOption("f", "filepath", true, "File path to process");
+            options.addOption("n", "numNeighbours", true, "Number of neighbours");
+            options.addOption("c", "cliqueSize", true, "Clique size");
+            options.addOption("p", "similarityThresholdPercent", true, "Similarity threshold percent");
+            options.addOption("a", "similarityThresholdAbsolute", true, "Similarity threshold absolute");
+            options.addOption("gui", false, "Run the program with a GUI");
+
+            // Create a parser
+            CommandLineParser parser = new DefaultParser();
+
+            try {
+                // Parse the command line arguments
+                CommandLine cmd = parser.parse(options, args);
+
+                // Get and use the parsed options
+                String filepath = cmd.getOptionValue("filepath");
+                int numNeighbours = cmd.hasOption("numNeighbours")
+                        ? Integer.parseInt(cmd.getOptionValue("numNeighbours"))
+                        : -1;
+                int cliqueSize = cmd.hasOption("cliqueSize") ? Integer.parseInt(cmd.getOptionValue("cliqueSize"))
+                        : -1;
+                double similarityThresholdPercent = cmd.hasOption("similarityThresholdPercent")
+                        ? Double.parseDouble(cmd.getOptionValue("similarityThresholdPercent"))
+                        : -1;
+                double similarityThresholdAbsolute = cmd.hasOption("similarityThresholdAbsolute")
+                        ? Double.parseDouble(cmd.getOptionValue("similarityThresholdAbsolute"))
+                        : -1;
+
+                // Check if either similarityThresholdPercent or similarityThresholdAbsolute is
+                // provided
+                if (similarityThresholdPercent == -1 && similarityThresholdAbsolute == -1 && args.length > 0) {
+                    throw new ParseException(
+                            "Either similarity threshold percent or similarity threshold absolute must be provided");
+                }
+
+                if (args.length > 0) {
+                    // Get and use the parsed options
+                    // ...
+
+                    // Use the parsed options
+                    File file = new File(filepath);
+                    mainFrame.thresholds.clear();
+                    mainFrame.algorithims.clear();
+                    mainFrame.timeSeriesList.clear();
+                    mainFrame.selectedFiles = new File[] { file };
+                    mainFrame.loadFile(file);
+                    mainFrame.valgtFilTextField.setText(file.getAbsolutePath());
+                }
+
+                // If no arguments provided or if the gui option is provided then show the GUI
+                if (args.length == 0 || cmd.hasOption("gui")) {
+                    mainFrame.setVisible(true);
+                }
+
+            } catch (ParseException e) {
+                System.out.println("Invalid command line arguments: " + e.getMessage());
+                HelpFormatter formatter = new HelpFormatter();
+                formatter.printHelp("java -jar yourprogram.jar", options);
+            }
         });
     }
 
