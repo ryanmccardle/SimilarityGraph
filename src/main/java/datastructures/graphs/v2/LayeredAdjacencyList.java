@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 public class LayeredAdjacencyList implements AdjacencyList {
 
     private final static Comparator<? super Pair<Integer, List<Edge>>> HIGHEST_DEGREES_FIRST = highestDegreesFirst();
-    
+
     private final Map<Integer, LabelledNeighborList> vertex2Neigbhors;
     private final Map<Integer, DoublyLinkedList<Edge>> adjacencyList;
     private final Map<Integer, Integer> vertex2Label;
@@ -43,7 +43,7 @@ public class LayeredAdjacencyList implements AdjacencyList {
     public static AdjacencyList make(Function<MandatoryStep, BuildStep> configuration) {
         return configuration.andThen(BuildStep::build).apply(new AdjacencyListBuilder());
     }
-    
+
     @Override
     public DoublyLinkedList<Edge> neighborsAsDoublyLinkedList(int v) {
         return adjacencyList.get(v);
@@ -53,7 +53,7 @@ public class LayeredAdjacencyList implements AdjacencyList {
     public boolean isEdge(int i, int j) {
         return vertex2Neigbhors
                 .get(i)
-                //.getNeighborsOfLastLayer()
+                // .getNeighborsOfLastLayer()
                 .allNeighbors()
                 .contains(new Edge(i, j));
     }
@@ -89,18 +89,18 @@ public class LayeredAdjacencyList implements AdjacencyList {
     public int degree(int v) {
         return vertex2Degree.get(v);
     }
-    
+
     // Time: O(n) where n = |vertices|
     /**
      * 
-     * @param v a node in vertices
+     * @param v         a node in vertices
      * @param neighbors neighbors of v
-     * @param vertices vertices inducing a subgraph
+     * @param vertices  vertices inducing a subgraph
      * @return edges incident on v that are inside the subgrpah incuded by vertices
      */
     private Set<Edge> makeEdges(final Integer v, DoublyLinkedList<Edge> neighbors, Set<Integer> vertices) {
         final Set<Edge> edges = new HashSet<>();
-        
+
         // O(d(v))
         final Iterator<Node<Edge>> it = neighbors.forwardIterator();
         while (it.hasNext()) {
@@ -118,14 +118,14 @@ public class LayeredAdjacencyList implements AdjacencyList {
     public void prioritize(final Set<Integer> prioritizedVertices) {
         // TODO
         // Time: Sum of (d_k(u)+1) for every u in U'
-        // In the adjacency list of each u in U’, choose the vertices in U’ 
-        // (labeled "k-1") among the first d_k(u) entries; and move them to 
+        // In the adjacency list of each u in U’, choose the vertices in U’
+        // (labeled "k-1") among the first d_k(u) entries; and move them to
         // the first part of the list.
 
         // Q: Is vertex2Degree.get(v) correct?
-        // A: Yes, it is the degree of v in G_k, and we are now going to find 
+        // A: Yes, it is the degree of v in G_k, and we are now going to find
         // since next step in CompleteGraphFinder is to determine degrees
-        
+
         for (Integer v : prioritizedVertices) {
             final DoublyLinkedList<Edge> neighbors = adjacencyList.get(v);
             final Set<Edge> edges = makeEdges(v, neighbors, prioritizedVertices);
@@ -194,11 +194,11 @@ public class LayeredAdjacencyList implements AdjacencyList {
         if (vertices == null) {
             throw new IllegalArgumentException();
         }
-        
+
         if (k == null) {
             throw new IllegalArgumentException();
         }
-        
+
         for (Integer v : vertices) {
             setLabel(v, k);
         }
@@ -208,10 +208,10 @@ public class LayeredAdjacencyList implements AdjacencyList {
     public void determineDegrees(Set<Integer> subgraphVertices) {
         // Time: Sum of (d_k(u)+1) for every u in U'
         // vertices = U'
-        
+
         for (Integer v : subgraphVertices) {
             final DoublyLinkedList<Edge> neighbors = adjacencyList.get(v);
-            
+
             int newDegree = 0;
             final Iterator<Node<Edge>> it = neighbors.forwardIterator();
             while (it.hasNext()) {
@@ -221,7 +221,7 @@ public class LayeredAdjacencyList implements AdjacencyList {
                     newDegree++;
                 }
             }
-            
+
             vertex2Degree.put(v, newDegree);
         }
     }
@@ -322,8 +322,7 @@ public class LayeredAdjacencyList implements AdjacencyList {
             label2Neighbors.put(label, neighbors
                     .stream()
                     .map(neighbor -> new Edge(v, neighbor))
-                    .collect(Collectors.toList())
-            );
+                    .collect(Collectors.toList()));
 
             return new LabelledNeighborList(v, label2Neighbors);
         }

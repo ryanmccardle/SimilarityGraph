@@ -4,10 +4,10 @@ package datastructures.vo;
 public class ThresholdAbsoluteValue implements Threshold {
 
     // ThresholdType.MILLISECONDS
-    // | 98 - 103 | =  5     <     7 milliseconds = absolute value
-    
+    // | 98 - 103 | = 5 < 7 milliseconds = absolute value
+
     private final Integer value;
-    
+
     public ThresholdAbsoluteValue(Integer value) {
         this.value = value;
     }
@@ -25,5 +25,5 @@ public class ThresholdAbsoluteValue implements Threshold {
     public Integer getRawInput() {
         return value;
     }
-    
+
 }

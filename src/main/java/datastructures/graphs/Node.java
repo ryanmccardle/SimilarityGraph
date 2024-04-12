@@ -1,7 +1,7 @@
 package datastructures.graphs;
 
 public class Node<V> {
-    
+
     private Integer index;
     private V value;
 

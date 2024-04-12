@@ -10,12 +10,12 @@ import java.util.function.Supplier;
 import java.util.stream.Collector;
 import vo.Summary;
 
-public class SummaryCollector implements Collector<Summary,SummaryCombiner,Map<Integer,Summary>> {
-    
+public class SummaryCollector implements Collector<Summary, SummaryCombiner, Map<Integer, Summary>> {
+
     private static final Set<Characteristics> characteristics = Collections.emptySet();
-    
+
     private int maxAntallNaboer;
-    
+
     public SummaryCollector(int maxAntallNaboer) {
         this.maxAntallNaboer = maxAntallNaboer;
     }
@@ -44,5 +44,5 @@ public class SummaryCollector implements Collector<Summary,SummaryCombiner,Map<I
     public Set<Characteristics> characteristics() {
         return characteristics;
     }
-    
+
 }

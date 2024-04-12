@@ -14,7 +14,7 @@ public class TidsserieTilNettverkTest {
 
     public TidsserieTilNettverkTest() {
     }
-    
+
     @Test
     public void areSimilarAsymmetricTest() {
         final Threshold threshold = new ThresholdPercentage(Double.valueOf("1.5"));

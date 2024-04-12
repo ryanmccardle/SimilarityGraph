@@ -16,23 +16,23 @@ public class DoublyLinkedList<E> {
     public DoublyLinkedList() {
         size = 0;
     }
-    
+
     public List<E> getListOfElements() {
         return getListOfNodes()
                 .stream()
                 .map(x -> x.getElement())
                 .collect(Collectors.toList());
     }
-    
+
     public List<Node<E>> getListOfNodes() {
         final List<Node<E>> list = new ArrayList<>();
-        
+
         final Iterator<Node<E>> it = forwardIterator();
         while (it.hasNext()) {
             final Node<E> node = it.next();
             list.add(node);
         }
-        
+
         return list;
     }
 
@@ -43,23 +43,23 @@ public class DoublyLinkedList<E> {
     public boolean isEmpty() {
         return size == 0;
     }
-    
+
     /**
      * Move node to the front of the list
      * 
      * Time: O(1)
      * 
-     * @param node 
+     * @param node
      */
     public void placeFirst(Node node) {
         if (node == head || node.equals(head)) {
             return;
         }
-        
+
         if (tail != null && tail == node) {
             tail = node.getPrev();
         }
-        
+
         if (node.getPrev() != null) {
             node.getPrev().setNext(node.getNext());
         }
@@ -67,16 +67,16 @@ public class DoublyLinkedList<E> {
         if (node.getNext() != null) {
             node.getNext().setPrev(node.getPrev());
         }
-        
+
         node.setNext(head);
         node.setPrev(null);
-        
+
         if (head != null) {
             head.setPrev(node);
         }
-        
+
         head = node;
-        
+
         if (tail == null) {
             tail = node;
         }
@@ -105,16 +105,16 @@ public class DoublyLinkedList<E> {
         }
         size++;
     }
-    
+
     // Takes 2 * O(d_k(v)) time where v is the node of this adjacency list
     // and d_k(v) is the degree of v in G_k
     public void moveToFront(Set<E> dataToBeMoved, int dk) {
         if (dk > size) {
             throw new IllegalArgumentException();
         }
-        
+
         final List<Node> nodesToMove = new ArrayList<>();
-        
+
         final Iterator<Node<E>> it = forwardIterator();
         int i = 0;
         while (it.hasNext() && i < dk) {
@@ -124,7 +124,7 @@ public class DoublyLinkedList<E> {
                 nodesToMove.add(node);
             }
         }
-        
+
         for (Node node : nodesToMove) {
             placeFirst(node);
         }
@@ -145,16 +145,16 @@ public class DoublyLinkedList<E> {
             newNode.getNext().setPrev(newNode);
         }
     }
-    
+
     public Iterator<Node<E>> forwardIterator() {
         return new ForwardIterator();
     }
-    
+
     private class ForwardIterator implements Iterator<Node<E>> {
-        
+
         private Node current;
         private boolean started;
-        
+
         private ForwardIterator() {
             this.current = null;
             this.started = false;
@@ -167,13 +167,13 @@ public class DoublyLinkedList<E> {
                 current = head;
                 return current != null;
             }
-            
+
             if (current == null) {
                 return false;
             }
-            
+
             current = current.getNext();
-            
+
             return current != null;
         }
 
@@ -182,10 +182,10 @@ public class DoublyLinkedList<E> {
             if (current == null) {
                 throw new NoSuchElementException();
             }
-            
+
             return current;
         }
-        
+
     }
 
     public void iterateForward() {
@@ -227,14 +227,14 @@ public class DoublyLinkedList<E> {
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder();
-        
+
         final Iterator<Node<E>> it = forwardIterator();
         while (it.hasNext()) {
             final Node<E> node = it.next();
             sb.append(node.getElement());
             sb.append(" -> ");
         }
-        
+
         return "DoublyLinkedList{" + sb.toString() + '}';
     }
 

@@ -18,32 +18,32 @@ public class LabelledNeighborList {
         this.nodeIndex = nodeIndex;
         this.label2Neighbors = new HashMap<>(label2Neighbors);
     }
-    
+
     public DoublyLinkedList<Edge> neighborsAsDoublyLinkedList() {
         final DoublyLinkedList<Edge> neighbors = new DoublyLinkedList<>();
-        
+
         for (Edge edge : allNeighbors()) {
             neighbors.addFirst(edge);
         }
-        
+
         return neighbors;
     }
-    
+
     public List<Edge> inducedSubgraph(Set<Integer> vertexSubset) {
         if (!vertexSubset.contains(nodeIndex)) {
             return new ArrayList<>();
         }
-        
+
         return allNeighbors()
                 .stream()
                 .filter(x -> vertexSubset.contains(x.getOtherThan(nodeIndex)))
                 .collect(Collectors.toList());
     }
-    
+
     public List<Edge> getNeighborsOfLastLayer() {
         return label2Neighbors.get(lastLayer());
     }
-    
+
     public int lastLayer() {
         return label2Neighbors
                 .keySet()
@@ -52,12 +52,12 @@ public class LabelledNeighborList {
                 .max()
                 .orElseThrow(RuntimeException::new);
     }
-    
+
     /**
      * Associate edges with layer k
      * 
      * @param k
-     * @param edges 
+     * @param edges
      */
     public void put(final int k, final List<Edge> edges) {
         label2Neighbors.put(k, edges);
@@ -73,13 +73,13 @@ public class LabelledNeighborList {
     public int degree(int k) {
         return label2Neighbors.get(k).size();
     }
-    
+
     /**
      * Get the layer of the given neighbor. -1 is returned if neighbor is not
      * found.
      * 
      * @param neighbor
-     * @return 
+     * @return
      */
     public int layer(int neighbor) {
         return label2Neighbors
@@ -88,8 +88,7 @@ public class LabelledNeighborList {
                 .filter(entry -> entry
                         .getValue()
                         .stream()
-                        .anyMatch(edge -> edge.hasNode(neighbor))
-                )
+                        .anyMatch(edge -> edge.hasNode(neighbor)))
                 .map(x -> x.getKey())
                 .findFirst()
                 .orElse(-1);
@@ -99,7 +98,7 @@ public class LabelledNeighborList {
      * 
      * Time: O(d(v)) where d(v) is the degree of this node v
      * 
-     * @return 
+     * @return
      */
     public int numNeighbors() {
         return (int) label2Neighbors
@@ -113,7 +112,7 @@ public class LabelledNeighborList {
      * 
      * Time: O(d(v)) where d(v) is the degree of this node v
      * 
-     * @return 
+     * @return
      */
     public List<Integer> getNeighborIndices() {
         return label2Neighbors
@@ -123,14 +122,14 @@ public class LabelledNeighborList {
                 .map(x -> x.getOtherThan(nodeIndex))
                 .collect(Collectors.toList());
     }
-    
+
     /**
      * Get neighbors with label k.
      * 
      * Time: O(1)
      * 
      * @param k
-     * @return 
+     * @return
      */
     public List<Edge> getNeighborsByLabel(int k) {
         return label2Neighbors.get(k);
@@ -140,7 +139,7 @@ public class LabelledNeighborList {
      * 
      * Time: O(d(v)) where d(v) is the degree of this node v
      * 
-     * @return 
+     * @return
      */
     public List<Edge> allNeighbors() {
         return label2Neighbors
@@ -189,12 +188,12 @@ public class LabelledNeighborList {
                     iterator.remove();
                 }
             }
-            
+
             edges.add(new Edge(nodeIndex, v));
         } else {
             final List<Edge> newEdgeList = new ArrayList<>();
             newEdgeList.add(new Edge(nodeIndex, v));
-            
+
             label2Neighbors.put(k, newEdgeList);
         }
     }

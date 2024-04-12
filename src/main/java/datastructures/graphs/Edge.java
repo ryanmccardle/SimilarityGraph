@@ -24,7 +24,7 @@ public class Edge {
         this.vertices = new TreeSet<>();
         this.vertices.add(a);
         this.vertices.add(b);
-        
+
         final List<Integer> list = this.vertices.stream().collect(Collectors.toList());
 
         this.source = list.get(0);
@@ -38,7 +38,7 @@ public class Edge {
     /**
      * The node with the least index
      * 
-     * @return 
+     * @return
      */
     public Integer getSource() {
         return source;
@@ -47,21 +47,21 @@ public class Edge {
     /**
      * The node with the highest index.
      * 
-     * @return 
+     * @return
      */
     public Integer getTarget() {
         return target;
     }
-    
+
     public boolean hasNode(int v) {
         return source.equals(v) || target.equals(v);
     }
-    
+
     /**
      * Given that v is equal to either source or target, return the other one.
      * 
      * @param v
-     * @return 
+     * @return
      */
     public Integer getOtherThan(Integer v) {
         return !source.equals(v) ? source : target;
@@ -72,13 +72,13 @@ public class Edge {
         if (obj == null) {
             return false;
         }
-        
+
         if (!Edge.class.isAssignableFrom(obj.getClass())) {
             return false;
         }
-        
+
         final Edge other = (Edge) obj;
-        
+
         return this.source.equals(other.getSource()) && this.target.equals(other.getTarget());
     }
 

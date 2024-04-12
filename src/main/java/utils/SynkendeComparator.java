@@ -15,5 +15,5 @@ public class SynkendeComparator implements Comparator<Integer> {
             return -1;
         }
     }
-    
+
 }

@@ -1,9 +1,9 @@
 package datastructures.vo;
 
 public class ThresholdPercentage implements Threshold {
-    
+
     private final Double value;
-    
+
     // ThresholdType.PERCENTAGE
     // value / 100.0
     // percentage / 100.0
@@ -26,5 +26,5 @@ public class ThresholdPercentage implements Threshold {
     public Integer getRawInput() {
         return value.intValue();
     }
-    
+
 }

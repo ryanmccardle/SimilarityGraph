@@ -32,7 +32,7 @@ public class CompleteGraphFinder {
         for (int i = 0; i < adjacencyList.numNodes(); ++i) {
             vertexSet.add(i);
         }
-        
+
         System.out.println("U at start: " + vertexSet);
 
         find(adjacencyList, vertexSet, l);
@@ -63,14 +63,15 @@ public class CompleteGraphFinder {
 
         } else {
             final List<Integer> sortedVertices = adjacencyList.getVerticesByHighestDegree(vertexSubset);
-            
+
             System.out.println("Sorted: " + sortedVertices);
 
             for (Integer v : sortedVertices) {
                 System.out.print(String.format("V: %d * ", v));
                 // d_k(v) is the degree of vertex v in G_k
                 // G_(k-1) is a subset of G_k
-                final Set<Integer> verticesKminus1 = adjacencyList.neighborsWithLabel(vertexSubset, v, k); // also calld U'
+                final Set<Integer> verticesKminus1 = adjacencyList.neighborsWithLabel(vertexSubset, v, k); // also calld
+                                                                                                           // U'
                 adjacencyList.setLabel(verticesKminus1, k - 1);
 
                 // Time: Sum of O(d(u)) for u in verticesKminus1
@@ -79,13 +80,13 @@ public class CompleteGraphFinder {
                 // determine the degree d_(k-1)(v) of each vertex v in U' in G_(k-1)
                 // Time: Sum of (d_k(u)+1) for every u in U'
                 adjacencyList.determineDegrees(verticesKminus1);
-                
+
                 vertexStack.add(v);
                 System.out.println("After add stack: " + vertexStack);
                 find(adjacencyList, verticesKminus1, k - 1);
                 vertexStack.removeLast();
                 System.out.println("After pop stack: " + vertexStack);
-                
+
                 adjacencyList.setLabel(verticesKminus1, k); // O(d_k(u) + 1)
                 adjacencyList.setLabel(v, k + 1);// logical deletion of v from G_k
                 adjacencyList.move(verticesKminus1, v, k);

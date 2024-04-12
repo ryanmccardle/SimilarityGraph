@@ -7,15 +7,15 @@ import java.util.List;
 import org.testng.annotations.Test;
 
 public class BridgeFinderTest {
-    
-    @Test  
+
+    @Test
     public void test3() throws Exception {
         /**
-         *     3
-         *    /
+         * 3
+         * /
          * 0-1-2
-         *    \|
-         *     4
+         * \|
+         * 4
          */
         // arrange
         final List<List<Integer>> graph = new ArrayList<>();
@@ -32,24 +32,24 @@ public class BridgeFinderTest {
         graph.get(3).add(1);
         graph.get(4).add(1);
         graph.get(4).add(2);
-        
+
         // act
         final BridgeFinder finder = new BridgeFinder(graph);
-        
+
         // assert
         for (Edge e : finder.getBridges()) {
             System.out.println(e);
         }
     }
-    
-    @Test  
+
+    @Test
     public void test2() throws Exception {
         /**
-         *     3
-         *    /
+         * 3
+         * /
          * 0-1-2
-         *    \
-         *     4
+         * \
+         * 4
          */
         // arrange
         final List<List<Integer>> graph = new ArrayList<>();
@@ -64,17 +64,17 @@ public class BridgeFinderTest {
         graph.get(2).add(1);
         graph.get(3).add(1);
         graph.get(4).add(1);
-        
+
         // act
         final BridgeFinder finder = new BridgeFinder(graph);
-        
+
         // assert
         for (Edge e : finder.getBridges()) {
             System.out.println(e);
         }
     }
 
-    @Test  
+    @Test
     public void test() throws Exception {
         List<List<Integer>> graph = new ArrayList<>();
         for (int i = 0; i < 7; ++i) {
@@ -95,11 +95,11 @@ public class BridgeFinderTest {
         graph.get(5).add(6);
         graph.get(6).add(4);
         graph.get(6).add(5);
-        
+
         BridgeFinder finder = new BridgeFinder(graph);
         for (Edge e : finder.getBridges()) {
             System.out.println(e);
         }
     }
-    
+
 }

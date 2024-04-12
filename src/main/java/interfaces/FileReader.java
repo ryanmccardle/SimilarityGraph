@@ -7,5 +7,5 @@ import java.util.List;
 public interface FileReader {
 
     List<Integer> read(File file);
-    
+
 }

@@ -2,7 +2,8 @@ package utils;
 
 public enum SimilarityDefinitions {
 
-    @Deprecated ASYMMETRIC, 
+    @Deprecated
+    ASYMMETRIC,
     SYMMETRIC;
-    
+
 }

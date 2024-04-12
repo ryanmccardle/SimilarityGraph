@@ -10,10 +10,10 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
 
-public class EdgeCollector implements Collector<List<Integer>, NeighborListCombiner, Map<Integer,Integer>> {
+public class EdgeCollector implements Collector<List<Integer>, NeighborListCombiner, Map<Integer, Integer>> {
 
     private static final Set<Characteristics> characteristics = Collections.emptySet();
-    
+
     @Override
     public Supplier<NeighborListCombiner> supplier() {
         return () -> new NeighborListCombiner();
@@ -38,5 +38,5 @@ public class EdgeCollector implements Collector<List<Integer>, NeighborListCombi
     public Set<Characteristics> characteristics() {
         return characteristics;
     }
-    
+
 }

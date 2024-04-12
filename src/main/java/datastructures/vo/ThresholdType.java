@@ -4,5 +4,5 @@ public enum ThresholdType {
 
     ABSOLUTE_VALUE,
     PERCENTAGE
-    
+
 }

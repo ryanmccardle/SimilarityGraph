@@ -5,13 +5,13 @@ public class Summary {
     private final Integer antallNaboer;
     private final Integer antallNoder;
     private final Integer akkumulertSum;
-    
+
     public Summary() {
         this.antallNaboer = 0;
         this.antallNoder = 0;
         this.akkumulertSum = 0;
     }
-    
+
     public Summary(int antallNaboer, int antallNoder, int akkumulertSum) {
         this.antallNaboer = antallNaboer;
         this.antallNoder = antallNoder;
@@ -29,13 +29,14 @@ public class Summary {
     public Integer getAkkumulertSum() {
         return akkumulertSum;
     }
-    
+
     public Summary add(Summary other) {
-        return new Summary(this.antallNaboer, this.antallNoder + other.antallNoder, this.akkumulertSum + other.akkumulertSum);
+        return new Summary(this.antallNaboer, this.antallNoder + other.antallNoder,
+                this.akkumulertSum + other.akkumulertSum);
     }
-    
+
     public Summary copy() {
         return new Summary(this.antallNaboer, this.antallNoder, this.akkumulertSum);
     }
-    
+
 }

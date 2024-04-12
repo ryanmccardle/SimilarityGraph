@@ -1,12 +1,12 @@
 package datastructures.graphs;
 
 public interface BuildStep {
-    
+
     /**
      * Build the adjacency list.
      * 
-     * @return 
+     * @return
      */
     AdjacencyList build();
-    
+
 }
