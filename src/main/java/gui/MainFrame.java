@@ -928,13 +928,24 @@ public class MainFrame extends javax.swing.JFrame {
 
                 if (args.length > 0) {
                     // Use the parsed options
-                    File file = new File(filepath);
                     mainFrame.thresholds.clear();
                     mainFrame.algorithims.clear();
                     mainFrame.timeSeriesList.clear();
-                    mainFrame.selectedFiles = new File[] { file };
-                    mainFrame.loadFile(file);
-                    mainFrame.valgtFilTextField.setText(file.getAbsolutePath());
+
+                    // Check if the provided file path is a directory
+                    File path = new File(filepath);
+                    if (path.isDirectory()) {
+                        File[] files = path.listFiles((dir, name) -> name.toLowerCase().endsWith(".txt"));
+                        List<File> selectedFiles = new ArrayList<>();
+                        for (File txtFile : files) {
+                            mainFrame.loadFile(txtFile);
+                            selectedFiles.add(txtFile);
+                        }
+                        mainFrame.selectedFiles = selectedFiles.toArray(new File[0]);
+                    } else {
+                        mainFrame.selectedFiles = new File[] { path };
+                        mainFrame.loadFile(path);
+                    }
 
                     if (numNeighbours != -1) {
                         mainFrame.antNaboerEnVeiTextField
